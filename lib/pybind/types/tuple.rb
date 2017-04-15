@@ -1,10 +1,13 @@
 module PyBind
   class PyTuple
+    include PyArrayLike
     include PyObjectWrapper
     pybind_type LibPython.PyTuple_Type
 
     def self.new(init)
       case init
+      when PyObjectRef
+        super
       when Integer
         super(LibPython.PyTuple_New(init))
       when Array
@@ -13,8 +16,8 @@ module PyBind
           tuple[index] = obj
         end
         tuple
-      when PyObjectRef
-        super(init)
+      else
+        raise TypeError, "the argument must be an Integer, a PyObjectRef or a Array"
       end
     end
 
@@ -35,13 +38,5 @@ module PyBind
       value = TypeCast.from_ruby(value)
       LibPython.PyTuple_SetItem(__pyref__, index, value)
     end
-
-    def to_a
-      size.times.map do |i|
-        self[i]
-      end
-    end
-
-    alias_method :to_ary, :to_a
   end
 end

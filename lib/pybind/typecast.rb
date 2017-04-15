@@ -38,6 +38,8 @@ module PyBind
         PyList.new(obj).__pyref__
       when Hash
         PyDict.new(obj).__pyref__
+      when nil
+        PyObjectRef.null
       else
         raise ArgumentError, "can not convert #{obj.inspect} to a python reference"
       end

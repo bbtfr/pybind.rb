@@ -5,6 +5,10 @@ module PyBind
     layout ob_refcnt: :ssize_t,
            ob_type:   PyObjectRef.by_ref
 
+    def self.null
+      new(FFI::Pointer::NULL)
+    end
+
     def none?
       LibPython.Py_None.to_ptr == to_ptr
     end
@@ -151,8 +155,9 @@ module PyBind
       attach_variable :PyString_Type, :PyBytes_Type, PyObjectRef
     end
 
-    attach_variable :PyList_Type, PyObjectRef
     attach_variable :PyTuple_Type, PyObjectRef
+    attach_variable :PySlice_Type, PyObjectRef
+    attach_variable :PyList_Type, PyObjectRef
     attach_variable :PyDict_Type, PyObjectRef
     attach_variable :PySet_Type, PyObjectRef
 

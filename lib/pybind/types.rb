@@ -39,4 +39,9 @@ module PyBind
 end
 
 require 'pybind/types/object'
+require 'pybind/types/array_like'
 require 'pybind/types/tuple'
+require 'pybind/types/slice'
+require 'pybind/types/list'
+require 'pybind/types/dict'
+require 'pybind/types/set'
