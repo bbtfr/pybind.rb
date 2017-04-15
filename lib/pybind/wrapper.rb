@@ -23,8 +23,8 @@ module PyBind
       args = PyTuple[*args]
       kwargs = kwargs.empty? ? PyObject.null : PyDict.new(kwargs)
       res = LibPython.PyObject_Call(__pyref__, args.__pyref__, kwargs.__pyref__)
-      return res.to_ruby if LibPython.PyErr_Occurred().null?
-      raise PyError.fetch
+      raise PyError.fetch unless LibPython.PyErr_Occurred().null?
+      res.to_ruby
     end
 
     def to_s

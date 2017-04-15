@@ -17,7 +17,7 @@ module PyBind
       @type = type
       @value = value
       @traceback = traceback
-      super("Error occurred in Python")
+      super("#{type}: #{value}")
     end
 
     attr_reader :type, :value, :traceback

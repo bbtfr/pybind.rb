@@ -10,7 +10,7 @@ module PyBind
     end
 
     def none?
-      LibPython.Py_None.to_ptr == to_ptr
+      PyBind::None.to_ptr == to_ptr
     end
   end
 
@@ -194,6 +194,11 @@ module PyBind
     attach_function :PyObject_Type, [PyObjectRef.by_ref], PyObjectRef.by_ref
     attach_function :PyCallable_Check, [PyObjectRef.by_ref], :int
 
+    # PyObject_Compare only avaliable in Python 2.x
+    if libpython.find_symbol('PyObject_Compare')
+      attach_function :PyObject_Compare, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
+    end
+
     # Bool
 
     attach_function :PyBool_FromLong, [:long], PyObjectRef.by_ref
@@ -320,7 +325,17 @@ module PyBind
     attach_function :PyNumber_Subtract, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
     attach_function :PyNumber_Multiply, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
     attach_function :PyNumber_TrueDivide, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyNumber_Remainder, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
     attach_function :PyNumber_Power, [PyObjectRef.by_ref, PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyNumber_Lshift, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyNumber_Rshift, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyNumber_And, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyNumber_Xor, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyNumber_Or, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyNumber_Positive, [PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyNumber_Negative, [PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyNumber_Invert, [PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyObject_Not, [PyObjectRef.by_ref], :int
 
     # Compiler
 
@@ -340,4 +355,6 @@ module PyBind
 
   PYTHON_DESCRIPTION = LibPython.Py_GetVersion().freeze
   PYTHON_VERSION = PYTHON_DESCRIPTION.split(' ', 2)[0].freeze
+
+  None = LibPython.Py_None
 end

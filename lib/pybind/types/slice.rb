@@ -12,8 +12,8 @@ module PyBind
       stop = stop ? TypeCast.from_ruby(stop) : PyObjectRef.null
       step = step ? TypeCast.from_ruby(step) : PyObjectRef.null
       pyobj = LibPython.PySlice_New(start, stop, step)
-      return pyobj.to_ruby unless pyobj.null?
-      raise PyError.fetch
+      raise PyError.fetch if pyobj.null?
+      pyobj.to_ruby
     end
   end
 end
