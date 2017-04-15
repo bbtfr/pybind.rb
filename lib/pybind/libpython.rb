@@ -1,19 +1,23 @@
 require 'ffi'
 
 module PyBind
+  class PyObjectRef < FFI::Struct
+    layout ob_refcnt: :ssize_t,
+           ob_type:   PyObjectRef.by_ref
+
+    def none?
+      LibPython.Py_None.to_ptr == to_ptr
+    end
+  end
+
   module LibPython
     extend FFI::Library
-
-    class PyObjectRef < FFI::Struct
-      layout ob_refcnt: :ssize_t,
-             ob_type:   PyObjectRef.by_ref
-    end
 
     def self.find_libpython(python = nil)
       python ||= ENV['PYTHON'] || 'python'
       python_config = investigate_python_config(python)
 
-      v = python_config[:VERSION]
+      version = python_config[:VERSION]
       libprefix = FFI::Platform::LIBPREFIX
       libs = []
       %i(INSTSONAME LDLIBRARY).each do |key|
@@ -23,7 +27,7 @@ module PyBind
       if (lib = python_config[:LIBRARY])
         libs << File.basename(lib, File.extname(lib))
       end
-      libs << "#{libprefix}python#{v}" << "#{libprefix}python"
+      libs << "#{libprefix}python#{version}" << "#{libprefix}python"
       libs.uniq!
 
       executable = python_config[:EXECUTABLE]

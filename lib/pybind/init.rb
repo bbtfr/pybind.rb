@@ -12,11 +12,11 @@ module PyBind
     LibPython.Py_InitializeEx(0)
 
     FFI::MemoryPointer.new(:pointer, 1) do |argv|
-      argv.write_pointer(FFI::MemoryPointer.from_string(""))
+      argv.write_pointer(FFI::MemoryPointer.from_string(''))
       LibPython.PySys_SetArgvEx(0, argv, 0)
     end
 
-    @builtin = LibPython.PyImport_ImportModule(PYTHON_VERSION < '3.0.0' ? '__builtin__' : 'builtins')
+    @builtin = LibPython.PyImport_ImportModule(PYTHON_VERSION < '3.0.0' ? '__builtin__' : 'builtins').to_ruby
   end
 
   __initialize_pycall__
