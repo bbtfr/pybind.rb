@@ -179,6 +179,7 @@ module PyBind
     # Object
 
     attach_function :PyObject_RichCompare, [PyObjectRef.by_ref, PyObjectRef.by_ref, :int], PyObjectRef.by_ref
+    attach_function :PyObject_RichCompareBool, [PyObjectRef.by_ref, PyObjectRef.by_ref, :int], :int
     attach_function :PyObject_GetAttrString, [PyObjectRef.by_ref, :string], PyObjectRef.by_ref
     attach_function :PyObject_SetAttrString, [PyObjectRef.by_ref, :string, PyObjectRef.by_ref], :int
     attach_function :PyObject_HasAttrString, [PyObjectRef.by_ref, :string], :int

@@ -24,9 +24,9 @@ module PyBind
       return other.null? if __pyref__.null?
       return false if other.null?
 
-      value = LibPython.PyObject_RichCompare(__pyref__, other, opcode)
-      return value.to_ruby unless value.null?
-      raise PyError.fetch
+      value = LibPython.PyObject_RichCompareBool(__pyref__, other, opcode)
+      raise PyError.fetch if value == -1
+      value == 1
     end
 
     RICH_COMPARISON_OPCODES.keys.each do |op|
