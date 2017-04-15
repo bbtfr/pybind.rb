@@ -38,8 +38,8 @@ tf.global_variables_initializer.().run.()
 1000.times do
   batch_xs, batch_ys = mnist.train.next_batch.(100)
   sess.run.(train_step, feed_dict: {
-    x.__pyobj__ => batch_xs, # but what I want is just x => batch_xs,
-    y_.__pyobj__ => batch_ys
+    x => batch_xs, # but what I want is just x => batch_xs,
+    y_ => batch_ys
     })
 end
 
@@ -47,6 +47,6 @@ end
 correct_prediction = tf.equal.(tf.argmax.(y, 1), tf.argmax.(y_, 1))
 accuracy = tf.reduce_mean.(tf.cast.(correct_prediction, tf.float32))
 puts(sess.run.(accuracy, feed_dict: {
-  x.__pyobj__ => mnist.test.images,
-  y_.__pyobj__ => mnist.test.labels
+  x => mnist.test.images,
+  y_ => mnist.test.labels
   }))

@@ -1,15 +1,18 @@
 require 'pybind/wrapper/attr_accessor'
 require 'pybind/wrapper/rich_comparer'
+require 'pybind/wrapper/operator'
 
 module PyBind
   module PyObjectWrapper
     include AttrAccessor
     include RichComparer
+    include Operator
 
     attr_reader :__pyref__
 
-    def initialize(pyobj)
-      @__pyref__ = TypeCast.from_ruby(pyobj)
+    def initialize(pyref)
+      raise TypeError, "the argument must be a PyObjectRef" unless pyref.kind_of? PyObjectRef
+      @__pyref__ = pyref
     end
 
     def type
@@ -25,15 +28,11 @@ module PyBind
     end
 
     def to_s
-      s = LibPython.PyObject_Str(__pyref__)
-      return super if s.null?
-      s.to_ruby
-    end
-
-    def inspect
-      s = LibPython.PyObject_Repr(__pyref__)
-      return super if s.null?
-      s.to_ruby
+      str = LibPython.PyObject_Str(__pyref__)
+      return str.to_ruby unless str.null?
+      str = LibPython.PyObject_Repr(__pyref__)
+      return str.to_ruby unless str.null?
+      super
     end
 
     def method_missing(name, *args, **kwargs)

@@ -24,10 +24,10 @@ module PyBind
     def [](key)
       case key
       when String, Symbol
-        PyBind.incref(LibPython.PyDict_GetItemString(__pyref__, key.to_s)).to_ruby
+        LibPython.PyDict_GetItemString(__pyref__, key.to_s).to_ruby
       else
         key = TypeCast.from_ruby(key)
-        PyBind.incref(LibPython.PyDict_GetItem(__pyref__, key)).to_ruby
+        LibPython.PyDict_GetItem(__pyref__, key).to_ruby
       end
     end
 

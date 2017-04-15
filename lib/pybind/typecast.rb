@@ -39,7 +39,7 @@ module PyBind
       when Hash
         PyDict.new(obj).__pyref__
       when nil
-        PyObjectRef.null
+        LibPython.Py_None
       else
         raise ArgumentError, "can not convert #{obj.inspect} to a python reference"
       end

@@ -16,21 +16,23 @@ module PyBind
       :>= => Py_GE
     }.freeze
 
-    def rich_compare(other, op)
+    def __rich_compare__(other, op)
       opcode = RICH_COMPARISON_OPCODES[op]
       raise ArgumentError, "Unknown comparison op: #{op}" unless opcode
 
-      other = Conversions.from_ruby(other)
-      return other.null? if __pyobj__.null?
+      other = TypeCast.from_ruby(other)
+      return other.null? if __pyref__.null?
       return false if other.null?
 
-      value = LibPython.PyObject_RichCompare(__pyobj__, other, opcode)
-      raise "Unable to compare: #{self} #{op} #{other}" if value.null?
-      value.to_ruby
+      value = LibPython.PyObject_RichCompare(__pyref__, other, opcode)
+      return value.to_ruby unless value.null?
+      raise PyError.fetch
     end
 
     RICH_COMPARISON_OPCODES.keys.each do |op|
-      define_method(op) {|other| rich_compare(other, op) }
+      define_method(op) do |other|
+        __rich_compare__(other, op)
+      end
     end
 
   end
