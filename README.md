@@ -1,8 +1,6 @@
 # PyBind
 
-**PyBind.rb** is a lightweight Ruby - Python binding using [`ffi`](https://github.com/ffi/ffi), it aims to create a way to call exsisting Python functions in Ruby.
-
-With the power of PyBind.rb, you can use all data-science packages in Python, e.g.: `numpy`, `pandas`, `matplotlib`, and even `tensorflow`.
+**PyBind.rb** is a lightweight Ruby - Python binding using [`ffi`](https://github.com/ffi/ffi), it aims to create a way to call exsisting Python functions in Ruby. With the power of PyBind.rb, you can use all data-science packages in Python, e.g.: `numpy`, `pandas`, `matplotlib`, and even `tensorflow`.
 
 More use-cases can be found in `examples` folder.
 
