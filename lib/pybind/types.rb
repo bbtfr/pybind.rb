@@ -35,7 +35,8 @@ module PyBind
       end
     end
 
-    bind_rbtype String do |obj|
+    bind_rbtype String, Symbol do |obj|
+      obj = obj.to_s
       case obj.encoding
       when Encoding::US_ASCII, Encoding::BINARY
         LibPython.PyString_FromStringAndSize(obj, obj.bytesize)
@@ -52,14 +53,6 @@ module PyBind
     bind_pytype LibPython.PyUnicode_Type do |pyref|
       pyref = LibPython.PyUnicode_AsUTF8String(pyref)
       PyString.to_ruby(pyref).force_encoding(Encoding::UTF_8)
-    end
-  end
-
-  class PySymbol
-    include PyObjectWrapper
-
-    bind_rbtype Symbol do |obj|
-      PyString.from_ruby(obj.to_s)
     end
   end
 
