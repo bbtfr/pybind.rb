@@ -1,5 +1,5 @@
 module PyBind
-  module PyArrayLike
+  module PySequence
     include Enumerable
 
     def include?(value)

@@ -1,8 +1,11 @@
+require 'pybind/types/sequence'
+
 module PyBind
   class PyTuple
-    include PyArrayLike
     include PyObjectWrapper
     bind_pytype LibPython.PyTuple_Type
+
+    include PySequence
 
     def self.new(init)
       case init

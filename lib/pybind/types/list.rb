@@ -1,12 +1,15 @@
+require 'pybind/types/sequence'
+
 module PyBind
   class PyList
-    include PyArrayLike
     include PyObjectWrapper
     bind_pytype LibPython.PyList_Type
 
     bind_rbtype Array do |obj|
       PyList.new(obj).__pyref__
     end
+
+    include PySequence
 
     def self.new(init = nil)
       case init
