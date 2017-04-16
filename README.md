@@ -107,7 +107,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-PyBind.py originally forked from [`pycall`](https://github.com/mrkn/pycall), special thanks goes to Kenta Murata [`mrkn`](https://github.com/mrkn) for his brilliant idea.
+**PyBind.rb** originally forked from [`pycall`](https://github.com/mrkn/pycall), special thanks goes to Kenta Murata ([`mrkn`](https://github.com/mrkn)) for his brilliant idea.
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/bbtfr/pybind.rb This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
