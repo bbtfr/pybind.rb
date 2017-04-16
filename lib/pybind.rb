@@ -5,6 +5,7 @@ require 'pybind/error'
 require 'pybind/typecast'
 require 'pybind/wrapper'
 require 'pybind/types'
+require 'pybind/utils'
 require 'pybind/init'
 
 module PyBind

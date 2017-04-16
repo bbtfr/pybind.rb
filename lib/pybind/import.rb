@@ -42,6 +42,10 @@ module PyBind
     raise PyError.fetch if value.null?
     value = value.to_ruby
     return value unless block_given?
-    yield value
+    begin
+      yield value
+    ensure
+      PyBind.decref(value)
+    end
   end
 end

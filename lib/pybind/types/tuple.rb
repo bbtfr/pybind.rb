@@ -2,7 +2,7 @@ module PyBind
   class PyTuple
     include PyArrayLike
     include PyObjectWrapper
-    pybind_type LibPython.PyTuple_Type
+    bind_pytype LibPython.PyTuple_Type
 
     def self.new(init)
       case init

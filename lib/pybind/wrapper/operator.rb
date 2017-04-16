@@ -52,7 +52,7 @@ module PyBind
 
     def **(other)
       other = TypeCast.from_ruby(other)
-      value = LibPython.PyNumber_Power(__pyref__, other, PyBind::None)
+      value = LibPython.PyNumber_Power(__pyref__, other, PyBind.None)
       raise PyError.fetch if value.null?
       value.to_ruby
     end

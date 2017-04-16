@@ -15,9 +15,12 @@ module PyBind
       @__pyref__ = pyref
     end
 
-    def type
+    def __pytype__
       LibPython.PyObject_Type(__pyref__).to_ruby
     end
+
+    extend Forwardable
+    def_delegators :__pyref__, :null?, :none?
 
     def call(*args, **kwargs)
       args = PyTuple[*args]
@@ -45,22 +48,49 @@ module PyBind
 
     module ClassMethods
       attr_reader :__pyref__
+      attr_reader :__rbtypes__
 
-      def pybind_type(pytype)
-        raise TypeError, "#{self} is already bound with #{__pyref__}" if __pyref__
+      def bind_pytype(pytype, &block)
+        raise ArgumentError, "#{self} is already bound with #{__pyref__}" if __pyref__
+        define_singleton_method :to_ruby, &block if block
         @__pyref__ = pytype
-        Types.register_type self
       end
 
-      def is_instance?(pyobj)
-        raise TypeError, "#{self} is not a python type" unless __pyref__
-        pyref = TypeCast.from_ruby(pyobj)
-        LibPython.PyObject_IsInstance(pyref, __pyref__) == 1
+      def pyinstance?(pyobj)
+        return false unless __pyref__
+        pyref = TypeCast.to_pyref(pyobj)
+        value = LibPython.PyObject_IsInstance(pyref, __pyref__)
+        raise PyError.fetch if value == -1
+        value == 1
+      end
+
+      def pysubclass?(pyobj)
+        return false unless __pyref__
+        pyref = TypeCast.to_pyref(pyobj)
+        value = LibPython.PyObject_IsSubclass(pyref, __pyref__)
+        raise PyError.fetch if value == -1
+        value == 1
+      end
+
+      def to_ruby(pyref)
+        new(pyref)
+      end
+
+      def bind_rbtype(*rbtypes, &block)
+        raise ArgumentError, "#{self} is already bound with #{__rbtypes__}" if __rbtypes__
+        define_singleton_method :from_ruby, &block if block
+        @__rbtypes__ = rbtypes
+      end
+
+      def rbinstance?(rbobj)
+        return false unless __rbtypes__
+        __rbtypes__.any? { |rbtype| rbtype === rbobj }
       end
     end
 
     def self.included(mod)
       mod.extend(ClassMethods)
+      Types.register_type(mod)
     end
   end
 end

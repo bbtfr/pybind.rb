@@ -2,7 +2,11 @@ module PyBind
   class PyList
     include PyArrayLike
     include PyObjectWrapper
-    pybind_type LibPython.PyList_Type
+    bind_pytype LibPython.PyList_Type
+
+    bind_rbtype Array do |obj|
+      PyList.new(obj).__pyref__
+    end
 
     def self.new(init = nil)
       case init
@@ -31,15 +35,6 @@ module PyBind
 
     def size
       LibPython.PyList_Size(__pyref__)
-    end
-
-    def [](index)
-      LibPython.PyList_GetItem(__pyref__, index).to_ruby
-    end
-
-    def []=(index, value)
-      value = TypeCast.from_ruby(value)
-      LibPython.PyList_SetItem(__pyref__, index, value)
     end
   end
 end

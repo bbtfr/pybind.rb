@@ -11,8 +11,21 @@ module PyBind
 
     def set_attr(name, value)
       value = TypeCast.from_ruby(value)
-      raise PyError.fetch if LibPython.PyObject_SetAttrString(__pyref__, name.to_s, value) == -1
+      ret = LibPython.PyObject_SetAttrString(__pyref__, name.to_s, value)
+      raise PyError.fetch if ret == -1
       self
+    end
+
+    def del_attr(name)
+      value = LibPython.PyObject_GetAttrString(__pyref__, name.to_s)
+      raise PyError.fetch if value.null?
+      ret = if LibPython.respond_to? :PyObject_DelAttrString
+          LibPython.PyObject_DelAttrString(__pyref__, name.to_s)
+        else
+          LibPython.PyObject_SetAttrString(__pyref__, name.to_s, PyBind.None)
+        end
+      raise PyError.fetch if ret == -1
+      value.to_ruby
     end
 
     def has_attr?(name)
@@ -41,7 +54,8 @@ module PyBind
       end
       pykey = TypeCast.from_ruby(indices)
       value = TypeCast.from_ruby(value)
-      raise PyError.fetch if LibPython.PyObject_SetItem(__pyref__, pykey, value) == -1
+      ret = LibPython.PyObject_SetItem(__pyref__, pykey, value)
+      raise PyError.fetch if ret == -1
       self
     end
 

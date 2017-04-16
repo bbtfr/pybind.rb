@@ -1,7 +1,7 @@
 module PyBind
   class PySlice
     include PyObjectWrapper
-    pybind_type LibPython.PySlice_Type
+    bind_pytype LibPython.PySlice_Type
 
     def self.new(start, stop = nil, step = nil)
       if stop.nil? && step.nil?

@@ -1,7 +1,7 @@
 module PyBind
   class PySet
     include PyObjectWrapper
-    pybind_type LibPython.PySet_Type
+    bind_pytype LibPython.PySet_Type
 
     def initialize(init)
       super

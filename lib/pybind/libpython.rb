@@ -10,7 +10,18 @@ module PyBind
     end
 
     def none?
-      PyBind::None.to_ptr == to_ptr
+      PyBind.None.to_ptr == to_ptr
+    end
+
+    def kind_of?(klass)
+      case klass
+      when PyBind::PyObjectRef
+        value = LibPython.PyObject_IsInstance(self, klass)
+        raise PyError.fetch if value == -1
+        value == 1
+      else
+        super
+      end
     end
   end
 
@@ -188,11 +199,17 @@ module PyBind
     attach_function :PyObject_DelItem, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
     attach_function :PyObject_Call, [PyObjectRef.by_ref, PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
     attach_function :PyObject_IsInstance, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
+    attach_function :PyObject_IsSubclass, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
     attach_function :PyObject_Dir, [PyObjectRef.by_ref], PyObjectRef.by_ref
     attach_function :PyObject_Repr, [PyObjectRef.by_ref], PyObjectRef.by_ref
     attach_function :PyObject_Str, [PyObjectRef.by_ref], PyObjectRef.by_ref
     attach_function :PyObject_Type, [PyObjectRef.by_ref], PyObjectRef.by_ref
     attach_function :PyCallable_Check, [PyObjectRef.by_ref], :int
+
+    # PyObject_Compare only avaliable in Python 3.x
+    if libpython.find_symbol('PyObject_DelAttrString')
+      attach_function :PyObject_DelAttrString, [PyObjectRef.by_ref, :string], :int
+    end
 
     # PyObject_Compare only avaliable in Python 2.x
     if libpython.find_symbol('PyObject_Compare')
@@ -355,6 +372,4 @@ module PyBind
 
   PYTHON_DESCRIPTION = LibPython.Py_GetVersion().freeze
   PYTHON_VERSION = PYTHON_DESCRIPTION.split(' ', 2)[0].freeze
-
-  None = LibPython.Py_None
 end

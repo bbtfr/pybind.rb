@@ -2,7 +2,11 @@ module PyBind
   class PyDict
     include Enumerable
     include PyObjectWrapper
-    pybind_type LibPython.PyDict_Type
+    bind_pytype LibPython.PyDict_Type
+
+    bind_rbtype Hash do |obj|
+      PyDict.new(obj).__pyref__
+    end
 
     def self.new(init = nil)
       case init
