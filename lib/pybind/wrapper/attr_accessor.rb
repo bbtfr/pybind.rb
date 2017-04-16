@@ -1,10 +1,12 @@
 module PyBind
   module AttrAccessor
     def get_attr(name, default = nil)
-      __pyref__.attr(name)
-    rescue PyError => pyerr
-      raise .fetch unless default
-      default
+      value = LibPython.PyObject_GetAttrString(__pyref__, name.to_s)
+      if value.null?
+        raise PyError.fetch unless default
+        return default
+      end
+      value.to_ruby
     end
 
     def set_attr(name, value)
@@ -31,7 +33,10 @@ module PyBind
     end
 
     def [](*indices)
-      __pyref__.item(*indices)
+      key = TypeCast.to_indices_pyref(indices)
+      value = LibPython.PyObject_GetItem(__pyref__, key)
+      raise PyError.fetch if value.null?
+      value.to_ruby
     end
 
     def []=(*indices_and_value)

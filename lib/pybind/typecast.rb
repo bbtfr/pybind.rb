@@ -37,6 +37,19 @@ module PyBind
       end
     end
 
+    def self.to_pyobj(obj)
+      case obj
+      when PyObjectWrapper
+        obj
+      when PyObjectRef
+        PyObject.new(obj)
+      when FFI::Pointer
+        PyObject.new(PyObjectRef.new(obj))
+      else
+        raise TypeError, "#{obj.inspect} is not a Python reference"
+      end
+    end
+
     def self.to_indices_pyref(indices)
       if indices.length == 1
         indices = indices[0]

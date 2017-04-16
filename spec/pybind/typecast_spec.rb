@@ -32,7 +32,7 @@ module PyBind
       end
 
       let(:fraction_value) do
-        p fraction_class.(355, 113)
+        fraction_class.(355, 113)
       end
 
       context 'the given python type is not registered in type mapping' do
@@ -48,7 +48,8 @@ module PyBind
           klass = Class.new
           klass.include PyObjectWrapper
           klass.bind_pytype fraction_class do |pyref|
-            Rational(pyref.attr('numerator'), pyref.attr('denominator'))
+            pyobj = PyObject.new(pyref)
+            Rational(pyobj.numerator, pyobj.denominator)
           end
         end
 

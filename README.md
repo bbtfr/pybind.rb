@@ -1,8 +1,10 @@
 # PyBind
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/pybind`. To experiment with that code, run `bin/console` for an interactive prompt.
+**PyBind.rb** is a lightweight Ruby - Python binding using [`ffi`](https://github.com/ffi/ffi), it aims to create a way to call exsisting Python functions in Ruby.
 
-TODO: Delete this and the text above, and describe your gem
+With the power of PyBind.rb, you can use all data-science packages in Python, e.g.: `numpy`, `pandas`, `matplotlib`, and even `tensorflow`.
+
+More use-cases can be found in `examples` folder.
 
 ## Installation
 
@@ -22,7 +24,80 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Hello world with PyBind.rb
+
+```ruby
+# This program prints Hello, world!
+require 'pybind'
+
+# You can eval a string in Python with `PyBind.eval`, 
+# this is the easiest way to use PyBind.rb
+# and this is equivalent to Python built-in `eval` function
+PyBind.eval('print("Hello, world!")')
+
+# Or exec a Python file
+PyBind.execfile('hello_world.py')
+
+# You can find all Python built-in functions at PyBind.builtin
+# Note that `PyBind.builtin.print` is a Python function object,
+# like a `proc` in Ruby, you need to call it by adding a `.` or `.call`
+PyBind.builtin.print.('hello_world.py')
+``` 
+
+Import Python modules
+
+```ruby
+require 'pybind'
+include PyBind::Import
+
+pyimport 'os'
+puts os.name
+```
+
+Customize convertor between Ruby & Python object
+
+```ruby
+require 'pybind'
+
+Fraction = PyBind.import_module('fractions').Fraction
+
+class PyFraction
+  include PyBind::PyObjectWrapper
+  bind_pytype Fraction
+end
+
+f = Fraction.(1, 2)
+f.kind_of? PyFraction # => true
+f.numerator # => 1
+f.denominator # => 2
+```
+
+Or you can map Python object to exsisting Ruby class
+
+```ruby
+require 'pybind'
+
+class PyFraction
+  include PyBind::PyObjectWrapper
+
+  Fraction = PyBind.import_module('fractions').Fraction
+
+  bind_pytype Fraction do |pyref|
+    # pyref is a PyObjectRef, which is a FFI::Struct
+    # This block defines how Python object converts to Ruby object
+    # By default, it's `new(pyref)`
+
+    # For easily access the attributes, let's convert it to PyObject
+    pyobj = PyBind::PyObject.new(pyref)
+    Rational(pyobj.numerator, pyobj.denominator)
+  end
+
+  bind_rbtype Rational do |rbobj|
+    # This block defines how Ruby object converts back to Python object
+    Fraction.(rbobj.numerator, rbobj.denominator)
+  end
+end
+```
 
 ## Development
 
@@ -32,5 +107,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/pybind. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+PyBind.py originally forked from [`pycall`](https://github.com/mrkn/pycall), special thanks goes to Kenta Murata [`mrkn`](https://github.com/mrkn) for his brilliant idea.
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/bbtfr/pybind.rb This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
