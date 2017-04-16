@@ -39,8 +39,16 @@ module PyBind
     end
 
     def method_missing(name, *args, **kwargs)
-      if has_attr?(name)
-        get_attr(name)
+      attr_name = name.to_s
+      is_setter = attr_name.end_with?("=")
+      attr_name = attr_name.chomp('=') if is_setter
+
+      if has_attr?(attr_name)
+        if is_setter
+          set_attr(attr_name, *args)
+        else
+          get_attr(attr_name)
+        end
       else
         super
       end
