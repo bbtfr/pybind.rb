@@ -79,7 +79,6 @@ module PyBind
     include PyObjectWrapper
 
     bind_pytype LibPython.PyBool_Type do |pyref|
-      p pyref
       LibPython.PyInt_AsSsize_t(pyref) != 0
     end
 

@@ -36,6 +36,15 @@ module PyBind
         raise TypeError, "#{obj.inspect} is not a Python reference"
       end
     end
+
+    def self.to_indices_pyref(indices)
+      if indices.length == 1
+        indices = indices[0]
+      else
+        indices = PyCall.tuple(*indices)
+      end
+      from_ruby(indices)
+    end
   end
 
   class PyObjectRef

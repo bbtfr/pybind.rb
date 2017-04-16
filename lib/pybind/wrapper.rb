@@ -49,11 +49,12 @@ module PyBind
     module ClassMethods
       attr_reader :__pyref__
       attr_reader :__rbtypes__
+      alias_method :__pytype__, :__pyref__
 
       def bind_pytype(pytype, &block)
         raise ArgumentError, "#{self} is already bound with #{__pyref__}" if __pyref__
         define_singleton_method :to_ruby, &block if block
-        @__pyref__ = pytype
+        @__pyref__ = TypeCast.to_pyref(pytype)
       end
 
       def pyinstance?(pyobj)

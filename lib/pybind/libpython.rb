@@ -23,6 +23,24 @@ module PyBind
         super
       end
     end
+
+    def attr(name, conversion: true)
+      value = LibPython.PyObject_GetAttrString(self, name.to_s)
+      raise PyError.fetch if value.null?
+      conversion ? value.to_ruby : value
+    end
+
+    def item(*indices, conversion: true)
+      if indices.length == 1
+        indices = indices[0]
+      else
+        indices = PyCall.tuple(*indices)
+      end
+      key = TypeCast.from_ruby(indices)
+      value = LibPython.PyObject_GetItem(self, key)
+      raise PyError.fetch if value.null?
+      conversion ? value.to_ruby : value
+    end
   end
 
   module LibPython
