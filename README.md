@@ -28,18 +28,19 @@ Hello world with PyBind.rb
 # This program prints Hello, world!
 require 'pybind'
 
-# You can eval a string in Python with `PyBind.eval`, 
+# You can eval a string in Python with `PyBind.eval`,
 # this is the easiest way to use PyBind.rb
 # and this is equivalent to Python built-in `eval` function
 PyBind.eval('print("Hello, world!")')
 
 # Or exec a Python file
-PyBind.execfile('hello_world.py')
+PyBind.execfile('examples/hello_world.py')
 
-# You can find all Python built-in functions at PyBind.builtin
+# You can find all Python built-in functions at `PyBind.builtin`
 # Note that `PyBind.builtin.print` is a Python function object,
 # like a `proc` in Ruby, you need to call it by adding a `.` or `.call`
-PyBind.builtin.print.('hello_world.py')
+# if you don't like it, see `pybind/autocall` secion below
+PyBind.builtin.print.('hello, world!')
 ``` 
 
 Import Python modules
@@ -95,6 +96,18 @@ class PyFraction
     Fraction.(rbobj.numerator, rbobj.denominator)
   end
 end
+```
+
+If you don't like the dot everywhere before the function call (just like me), you can just `require 'pybind/autocall'`.
+Note that this will heavily change the behavior of your code, but the life will be easier.
+
+```ruby
+require 'pybind'
+require 'pybind/autocall'
+
+# No dot anymore, if you need the function object, you need to call
+# `PyBind.builtin.get_attr('print')`
+PyBind.builtin.print('Hello, world!')
 ```
 
 ## Development

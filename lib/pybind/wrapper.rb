@@ -47,7 +47,7 @@ module PyBind
         if is_setter
           set_attr(attr_name, *args)
         else
-          get_attr(attr_name)
+          autocall_method_missing(get_attr(attr_name), *args, **kwargs)
         end
       else
         super
@@ -100,6 +100,10 @@ module PyBind
     def self.included(mod)
       mod.extend(ClassMethods)
       Types.register_type(mod)
+    end
+
+    def autocall_method_missing(value, *args, **kwargs)
+      value
     end
   end
 end

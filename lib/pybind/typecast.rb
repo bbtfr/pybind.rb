@@ -46,7 +46,7 @@ module PyBind
       when FFI::Pointer
         PyObject.new(PyObjectRef.new(obj))
       else
-        raise TypeError, "#{obj.inspect} is not a Python reference"
+        raise TypeError, "#{obj.inspect} is not a Python object"
       end
     end
 

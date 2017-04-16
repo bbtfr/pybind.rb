@@ -23,8 +23,11 @@ module PyBind
     attr_reader :type, :value, :traceback
 
     def message
-      lines = [super] + PyBind.import_module('traceback').format_tb.(traceback).to_a
+      baseline = super
+      lines = [baseline] + PyBind.parse_traceback(traceback)
       lines.join("\n")
+    rescue
+      baseline
     end
   end
 end
