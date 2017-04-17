@@ -4,7 +4,7 @@ module PyBind
   module PyObjectWrapper
     def autocall_method_missing(value, *args, **kwargs)
       case value
-      when PyType, PyFunction, PyBuiltinFunction, PyMethod
+      when PyCallable
         value.call(*args, **kwargs)
       else
         value

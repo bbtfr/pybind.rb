@@ -30,7 +30,7 @@ module PyBind
 
     bind_pytype LibPython.PyUnicode_Type do |pystruct|
       pystruct = LibPython.PyUnicode_AsUTF8String(pystruct)
-      PyString.to_ruby(pystruct).force_encoding(Encoding::UTF_8)
+      PyString.from_python(pystruct).force_encoding(Encoding::UTF_8)
     end
   end
 

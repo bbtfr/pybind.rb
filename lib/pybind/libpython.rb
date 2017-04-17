@@ -182,7 +182,7 @@ module PyBind
     attach_function :PyObject_Type, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
     attach_function :PyCallable_Check, [PyObjectStruct.by_ref], :int
 
-    # PyObject_Compare only avaliable in Python 3.x
+    # PyObject_DelAttrString only avaliable in Python 3.x
     if libpython.find_symbol('PyObject_DelAttrString')
       attach_function :PyObject_DelAttrString, [PyObjectStruct.by_ref, :string], :int
     end
@@ -196,14 +196,24 @@ module PyBind
 
     attach_function :PyBool_FromLong, [:long], PyObjectStruct.by_ref
     attach_variable :_Py_TrueStruct, PyObjectStruct
-    attach_variable :_Py_ZeroStruct, PyObjectStruct
 
     def self.Py_True
       _Py_TrueStruct
     end
 
-    def self.Py_False
-      _Py_ZeroStruct
+    # _Py_ZeroStruct only avaliable in Python 2.x, use _Py_FalseStruct in Python 3.x
+    if libpython.find_symbol('PyObject_Compare')
+      attach_variable :_Py_ZeroStruct, PyObjectStruct
+
+      def self.Py_False
+        _Py_ZeroStruct
+      end
+    else
+      attach_variable :_Py_FalseStruct, PyObjectStruct
+
+      def self.Py_False
+        _Py_FalseStruct
+      end
     end
 
     # Integer
