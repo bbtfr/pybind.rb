@@ -1,68 +1,28 @@
 module PyBind
   module TypeCast
-    def self.to_ruby(pyobj)
-      pyref = to_pyref(pyobj)
-      return nil if pyref.null? || pyref.none?
+    def self.from_python(pyobj)
+      pystruct = pyobj.to_python_struct
+      return nil if pystruct.null? || pystruct.none?
 
       Types.pytypes.each do |pytype|
-        return pytype.to_ruby(pyref) if pytype.pyinstance?(pyref)
+        return pytype.from_python(pystruct) if pytype.python_instance?(pystruct)
       end
-      PyObject.to_ruby(pyref)
+      PyObject.from_python(pystruct)
     end
 
-    def self.from_ruby(obj)
-      case obj
-      when PyObjectStruct, PyObjectWrapper, FFI::Pointer
-        to_pyref(obj)
-      when NilClass
-        PyBind.None
-      else
-        Types.pytypes.each do |pytype|
-          return pytype.from_ruby(obj) if pytype.rbinstance?(obj)
-        end
-        raise TypeError, "can not convert #{obj.inspect} to a PyObjectStruct"
-      end
-    end
-
-    def self.to_pyref(obj)
-      case obj
-      when PyObjectStruct
-        obj
-      when PyObjectWrapper
-        obj.__pyref__
-      when FFI::Pointer
-        PyObjectStruct.new(obj)
-      else
-        raise TypeError, "#{obj.inspect} is not a Python reference"
-      end
-    end
-
-    def self.to_pyobj(obj)
-      case obj
-      when PyObjectWrapper
-        obj
-      when PyObjectStruct
-        PyObject.new(obj)
-      when FFI::Pointer
-        PyObject.new(PyObjectStruct.new(obj))
-      else
-        raise TypeError, "#{obj.inspect} is not a Python object"
-      end
-    end
-
-    def self.to_indices_pyref(indices)
+    def self.to_python_arguments(indices)
       if indices.length == 1
         indices = indices[0]
       else
         indices = PyCall.tuple(*indices)
       end
-      from_ruby(indices)
+      indices.to_python
     end
   end
 
   class PyObjectStruct
     def to_ruby
-      TypeCast.to_ruby(self)
+      TypeCast.from_python(self)
     end
   end
 end

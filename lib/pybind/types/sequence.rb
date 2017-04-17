@@ -3,8 +3,8 @@ module PyBind
     include Enumerable
 
     def include?(value)
-      value = TypeCast.from_ruby(value)
-      value = LibPython.PySequence_Contains(__pyref__, value)
+      value = value.to_python
+      value = LibPython.PySequence_Contains(@pystruct, value)
       raise PyError.fetch if value == -1
       value == 1
     end

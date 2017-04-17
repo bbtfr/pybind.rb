@@ -27,5 +27,10 @@ module PyBind
     def to_ruby_object
       PyObject.new(self)
     end
+
+    def to_python_struct
+      self
+    end
+    alias_method :to_python, :to_python_struct
   end
 end

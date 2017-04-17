@@ -7,9 +7,9 @@ module PyBind
       ptraceback = ptrs + 2 * ptrs.type_size
       LibPython.PyErr_Fetch(ptype, pvalue, ptraceback)
       LibPython.PyErr_NormalizeException(ptype, pvalue, ptraceback)
-      type = TypeCast.to_ruby(ptype.read(:pointer))
-      value = TypeCast.to_ruby(pvalue.read(:pointer))
-      traceback = TypeCast.to_ruby(ptraceback.read(:pointer))
+      type = TypeCast.from_python(PyObjectStruct.new(ptype.read(:pointer)))
+      value = TypeCast.from_python(PyObjectStruct.new(pvalue.read(:pointer)))
+      traceback = TypeCast.from_python(PyObjectStruct.new(ptraceback.read(:pointer)))
       new(type, value, traceback)
     end
 

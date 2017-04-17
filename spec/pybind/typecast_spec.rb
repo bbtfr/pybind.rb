@@ -37,7 +37,7 @@ module PyBind
 
       context 'the given python type is not registered in type mapping' do
         it 'does not convert the given python object' do
-          expect(TypeCast.to_ruby(fraction_value)).to be_kind_of(PyObject)
+          expect(TypeCast.from_python(fraction_value)).to be_kind_of(PyObject)
         end
       end
 
@@ -55,42 +55,42 @@ module PyBind
 
         after do
           Types.pytypes.delete_if do |type_pair|
-            type_pair.__pytype__ == fraction_class.__pyref__
+            type_pair.python_type == fraction_class.to_python_struct
           end
         end
 
         it 'converts the given python object to the specific ruby object' do
-          expect(TypeCast.to_ruby(fraction_value)).to eq(Rational(355, 113))
+          expect(TypeCast.from_python(fraction_value)).to eq(Rational(355, 113))
         end
       end
     end
 
-    describe '.from_ruby' do
-      def from_ruby(obj)
-        TypeCast.from_ruby(obj)
+    describe '.to_python' do
+      def to_python(obj)
+        obj.to_python
       end
 
       context 'for a PyObjectRef' do
         let(:pyobj) { PyBind.eval('object()') }
-        subject { from_ruby(pyobj.__pyref__) }
-        it { is_expected.to equal(pyobj.__pyref__) }
+        subject { to_python(pyobj.to_python_struct) }
+        it { is_expected.to equal(pyobj.to_python_struct) }
       end
 
       context 'for true' do
-        subject { from_ruby(true) }
+        subject { to_python(true) }
         it { is_expected.to be_kind_of(LibPython.PyBool_Type) }
         specify { expect(subject.to_ruby).to equal(true) }
       end
 
       context 'for false' do
-        subject { from_ruby(false) }
+        subject { to_python(false) }
         it { is_expected.to be_kind_of(LibPython.PyBool_Type) }
         specify { expect(subject.to_ruby).to equal(false) }
       end
 
       [-1, 0, 1].each do |int_value|
         context "for #{int_value}" do
-          subject { from_ruby(int_value) }
+          subject { to_python(int_value) }
           it { is_expected.to be_kind_of(LibPython.PyInt_Type) }
           specify { expect(subject.to_ruby).to eq(int_value) }
         end
@@ -98,7 +98,7 @@ module PyBind
 
       [-Float::INFINITY, -1.0, 0.0, 1.0, Float::INFINITY, Float::NAN].each do |float_value|
         context "for #{float_value}" do
-          subject { from_ruby(float_value) }
+          subject { to_python(float_value) }
           it { is_expected.to be_kind_of(LibPython.PyFloat_Type) }
           if float_value.nan?
             specify { expect(subject.to_ruby).to be_nan }
@@ -110,9 +110,9 @@ module PyBind
 
       context 'for a Hash' do
         let(:hash) { { a: 1, b: 2, c: 3 } }
-        subject { from_ruby(hash) }
+        subject { to_python(hash) }
         it { is_expected.to be_kind_of(LibPython.PyDict_Type) }
-        specify { expect(TypeCast.to_ruby(subject)).to eq(hash) }
+        specify { expect(TypeCast.from_python(subject)).to eq(hash) }
       end
     end
   end

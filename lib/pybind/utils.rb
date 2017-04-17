@@ -27,7 +27,7 @@ module PyBind
     end
 
     def main_dict
-      LibPython.PyModule_GetDict(PyBind.import_module("__main__").__pyref__).to_ruby
+      LibPython.PyModule_GetDict(PyBind.import_module("__main__").to_python_struct).to_ruby
     end
 
     def eval(str)
@@ -50,20 +50,20 @@ module PyBind
     end
 
     def callable?(pyobj)
-      pyref = TypeCast.to_pyref(pyobj)
-      LibPython.PyCallable_Check(pyref) == 1
+      pystruct = pyobj.to_python_struct
+      LibPython.PyCallable_Check(pystruct) == 1
     end
 
     def incref(pyobj)
-      pyref = TypeCast.to_pyref(pyobj)
-      LibPython.Py_IncRef(pyref)
+      pystruct = pyobj.to_python_struct
+      LibPython.Py_IncRef(pystruct)
       pyobj
     end
 
     def decref(pyobj)
-      pyref = TypeCast.to_pyref(pyobj)
-      LibPython.Py_DecRef(pyref)
-      pyref.send :pointer=, FFI::Pointer::NULL
+      pystruct = pyobj.to_python_struct
+      LibPython.Py_DecRef(pystruct)
+      pystruct.send :pointer=, FFI::Pointer::NULL
       pyobj
     end
 

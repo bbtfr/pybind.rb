@@ -4,10 +4,6 @@ module PyBind
     include PyObjectWrapper
     bind_pytype LibPython.PyDict_Type
 
-    bind_rbtype Hash do |obj|
-      PyDict.new(obj).__pyref__
-    end
-
     def self.new(init = nil)
       case init
       when PyObjectStruct
@@ -28,21 +24,21 @@ module PyBind
     def [](key)
       case key
       when String, Symbol
-        LibPython.PyDict_GetItemString(__pyref__, key.to_s).to_ruby
+        LibPython.PyDict_GetItemString(@pystruct, key.to_s).to_ruby
       else
-        key = TypeCast.from_ruby(key)
-        LibPython.PyDict_GetItem(__pyref__, key).to_ruby
+        key = key.to_python
+        LibPython.PyDict_GetItem(@pystruct, key).to_ruby
       end
     end
 
     def []=(key, value)
-      value = TypeCast.from_ruby(value)
+      value = value.to_python
       case key
       when String, Symbol
-        LibPython.PyDict_SetItemString(__pyref__, key.to_s, value)
+        LibPython.PyDict_SetItemString(@pystruct, key.to_s, value)
       else
-        key = TypeCast.from_ruby(key)
-        LibPython.PyDict_SetItem(__pyref__, key, value)
+        key = key.to_python
+        LibPython.PyDict_SetItem(@pystruct, key, value)
       end
       value
     end
@@ -50,37 +46,37 @@ module PyBind
     def delete(key)
       case key
       when String, Symbol
-        value = LibPython.PyDict_GetItemString(__pyref__, key).to_ruby
-        LibPython.PyDict_DelItemString(__pyref__, key.to_s)
+        value = LibPython.PyDict_GetItemString(@pystruct, key).to_ruby
+        LibPython.PyDict_DelItemString(@pystruct, key.to_s)
       else
-        key = TypeCast.from_ruby(key)
-        value = LibPython.PyDict_GetItem(__pyref__, key).to_ruby
-        LibPython.PyDict_DelItem(__pyref__, key)
+        key = key.to_python
+        value = LibPython.PyDict_GetItem(@pystruct, key).to_ruby
+        LibPython.PyDict_DelItem(@pystruct, key)
       end
       value
     end
 
     def size
-      LibPython.PyDict_Size(__pyref__)
+      LibPython.PyDict_Size(@pystruct)
     end
 
     def keys
-      LibPython.PyDict_Keys(__pyref__).to_ruby
+      LibPython.PyDict_Keys(@pystruct).to_ruby
     end
 
     def values
-      LibPython.PyDict_Values(__pyref__).to_ruby
+      LibPython.PyDict_Values(@pystruct).to_ruby
     end
 
     def has_key?(key)
-      key = TypeCast.from_ruby(key)
-      value = LibPython.PyDict_Contains(__pyref__, key)
+      key = key.to_python
+      value = LibPython.PyDict_Contains(@pystruct, key)
       raise PyError.fetch if value == -1
       value == 1
     end
 
     def to_a
-      LibPython.PyDict_Items(__pyref__).to_ruby
+      LibPython.PyDict_Items(@pystruct).to_ruby
     end
 
     def to_hash

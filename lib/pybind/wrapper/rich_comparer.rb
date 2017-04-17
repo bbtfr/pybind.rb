@@ -20,11 +20,11 @@ module PyBind
       opcode = RICH_COMPARISON_OPCODES[op]
       raise ArgumentError, "Unknown comparison op: #{op}" unless opcode
 
-      other = TypeCast.from_ruby(other)
-      return other.null? if __pyref__.null?
+      other = other.to_python
+      return other.null? if @pystruct.null?
       return false if other.null?
 
-      value = LibPython.PyObject_RichCompareBool(__pyref__, other, opcode)
+      value = LibPython.PyObject_RichCompareBool(@pystruct, other, opcode)
       raise PyError.fetch if value == -1
       value == 1
     end

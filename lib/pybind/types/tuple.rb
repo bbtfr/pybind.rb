@@ -30,16 +30,16 @@ module PyBind
     end
 
     def size
-      LibPython.PyTuple_Size(__pyref__)
+      LibPython.PyTuple_Size(@pystruct)
     end
 
     def [](index)
-      LibPython.PyTuple_GetItem(__pyref__, index).to_ruby
+      LibPython.PyTuple_GetItem(@pystruct, index).to_ruby
     end
 
     def []=(index, value)
-      value = TypeCast.from_ruby(value)
-      LibPython.PyTuple_SetItem(__pyref__, index, value)
+      value = value.to_python
+      LibPython.PyTuple_SetItem(@pystruct, index, value)
     end
   end
 end

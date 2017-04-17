@@ -5,10 +5,6 @@ module PyBind
     include PyObjectWrapper
     bind_pytype LibPython.PyList_Type
 
-    bind_rbtype Array do |obj|
-      PyList.new(obj).__pyref__
-    end
-
     include PySequence
 
     def self.new(init = nil)
@@ -31,13 +27,13 @@ module PyBind
     end
 
     def <<(value)
-      value = TypeCast.from_ruby(value)
-      LibPython.PyList_Append(__pyref__, value)
+      value = value.to_python
+      LibPython.PyList_Append(@pystruct, value)
       self
     end
 
     def size
-      LibPython.PyList_Size(__pyref__)
+      LibPython.PyList_Size(@pystruct)
     end
   end
 end

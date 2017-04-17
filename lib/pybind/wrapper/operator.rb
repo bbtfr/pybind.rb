@@ -23,8 +23,8 @@ module PyBind
       opfunc = BINARY_OPERATION_OPFUNCS[op]
       raise ArgumentError, "Unknown binary operation op: #{op}" unless opfunc
 
-      other = TypeCast.from_ruby(other)
-      value = LibPython.send(opfunc, __pyref__, other)
+      other = other.to_python
+      value = LibPython.send(opfunc, @pystruct, other)
       raise PyError.fetch if value.null?
       value.to_ruby
     end
@@ -39,7 +39,7 @@ module PyBind
       opfunc = UNARY_OPERATION_OPFUNCS[op]
       raise ArgumentError, "Unknown unary operation op: #{op}" unless opfunc
 
-      value = LibPython.send(opfunc, __pyref__)
+      value = LibPython.send(opfunc, @pystruct)
       raise PyError.fetch if value.null?
       value.to_ruby
     end
@@ -51,16 +51,16 @@ module PyBind
     end
 
     def **(other)
-      other = TypeCast.from_ruby(other)
-      value = LibPython.PyNumber_Power(__pyref__, other, PyBind.None)
+      other = other.to_python
+      value = LibPython.PyNumber_Power(@pystruct, other, PyBind.None)
       raise PyError.fetch if value.null?
       value.to_ruby
     end
 
     def <=>(other)
       if LibPython.respond_to? :PyObject_Compare
-        other = TypeCast.from_ruby(other)
-        value = LibPython.PyObject_Compare(__pyref__, other)
+        other = other.to_python
+        value = LibPython.PyObject_Compare(@pystruct, other)
         raise PyError.fetch unless LibPython.PyErr_Occurred().null?
         value
       else
@@ -69,12 +69,12 @@ module PyBind
     end
 
     def ===(other)
-      other = TypeCast.from_ruby(other)
-      __pyref__.to_ptr == other.to_ptr
+      other = other.to_python
+      @pystruct.to_ptr == other.to_ptr
     end
 
     def !
-      value = LibPython.PyObject_Not(__pyref__)
+      value = LibPython.PyObject_Not(@pystruct)
       raise PyError.fetch if value == -1
       value == 1
     end

@@ -8,11 +8,12 @@ module PyBind
     end
 
     def size
-      LibPython.PySet_Size(__pyref__)
+      LibPython.PySet_Size(@pystruct)
     end
 
     def include?(obj)
-      LibPython.PySet_Contains(__pyref__, TypeCast.from_ruby(obj)) == 1
+      obj = obj.to_python
+      LibPython.PySet_Contains(@pystruct, obj) == 1
     end
   end
 end

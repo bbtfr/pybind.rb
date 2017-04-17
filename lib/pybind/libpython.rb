@@ -195,6 +195,16 @@ module PyBind
     # Bool
 
     attach_function :PyBool_FromLong, [:long], PyObjectStruct.by_ref
+    attach_variable :_Py_TrueStruct, PyObjectStruct
+    attach_variable :_Py_ZeroStruct, PyObjectStruct
+
+    def self.Py_True
+      _Py_TrueStruct
+    end
+
+    def self.Py_False
+      _Py_ZeroStruct
+    end
 
     # Integer
 

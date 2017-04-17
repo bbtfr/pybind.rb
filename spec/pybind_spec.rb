@@ -25,7 +25,7 @@ RSpec.describe PyBind do
       expect(PyBind.callable?(PyBind.eval('object()'))).to eq(false)
       expect(PyBind.callable?(PyBind::LibPython.PyDict_Type)).to eq(true)
       expect(PyBind.callable?(PyBind::PyDict.new('a' => 1))).to eq(false)
-      expect { PyBind.callable?(42) }.to raise_error(TypeError, /is not a Python reference/)
+      expect { PyBind.callable?(42) }.to raise_error(TypeError, /can not convert .* to a PyObjectStruct/)
     end
   end
 
