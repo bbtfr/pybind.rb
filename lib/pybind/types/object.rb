@@ -3,7 +3,7 @@ module PyBind
     include PyObjectWrapper
 
     def self.null
-      new(PyObjectRef.null)
+      new(PyObjectStruct.null)
     end
   end
 end

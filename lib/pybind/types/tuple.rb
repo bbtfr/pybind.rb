@@ -9,7 +9,7 @@ module PyBind
 
     def self.new(init)
       case init
-      when PyObjectRef
+      when PyObjectStruct
         super
       when Integer
         super(LibPython.PyTuple_New(init))
@@ -20,7 +20,7 @@ module PyBind
         end
         tuple
       else
-        raise TypeError, "the argument must be an Integer, a PyObjectRef or a Array"
+        raise TypeError, "the argument must be an Integer, a PyObjectStruct or a Array"
       end
     end
 

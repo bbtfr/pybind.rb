@@ -6,11 +6,11 @@ module PyBind
     def self.new(start, stop = nil, step = nil)
       if stop.nil? && step.nil?
         start, stop = nil, start
-        return super(stop) if stop.kind_of?(PyObjectRef)
+        return super(stop) if stop.kind_of?(PyObjectStruct)
       end
-      start = start ? TypeCast.from_ruby(start) : PyObjectRef.null
-      stop = stop ? TypeCast.from_ruby(stop) : PyObjectRef.null
-      step = step ? TypeCast.from_ruby(step) : PyObjectRef.null
+      start = start ? TypeCast.from_ruby(start) : PyObjectStruct.null
+      stop = stop ? TypeCast.from_ruby(stop) : PyObjectStruct.null
+      step = step ? TypeCast.from_ruby(step) : PyObjectStruct.null
       pyobj = LibPython.PySlice_New(start, stop, step)
       raise PyError.fetch if pyobj.null?
       pyobj.to_ruby

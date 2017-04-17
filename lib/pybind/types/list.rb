@@ -13,7 +13,7 @@ module PyBind
 
     def self.new(init = nil)
       case init
-      when PyObjectRef
+      when PyObjectStruct
         super
       when nil
         new(0)
@@ -26,7 +26,7 @@ module PyBind
           end
         end
       else
-        raise TypeError, "the argument must be an Integer, a PyObjectRef or a Array"
+        raise TypeError, "the argument must be an Integer, a PyObjectStruct or a Array"
       end
     end
 

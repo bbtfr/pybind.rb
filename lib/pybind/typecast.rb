@@ -12,7 +12,7 @@ module PyBind
 
     def self.from_ruby(obj)
       case obj
-      when PyObjectRef, PyObjectWrapper, FFI::Pointer
+      when PyObjectStruct, PyObjectWrapper, FFI::Pointer
         to_pyref(obj)
       when NilClass
         PyBind.None
@@ -20,18 +20,18 @@ module PyBind
         Types.pytypes.each do |pytype|
           return pytype.from_ruby(obj) if pytype.rbinstance?(obj)
         end
-        raise TypeError, "can not convert #{obj.inspect} to a PyObjectRef"
+        raise TypeError, "can not convert #{obj.inspect} to a PyObjectStruct"
       end
     end
 
     def self.to_pyref(obj)
       case obj
-      when PyObjectRef
+      when PyObjectStruct
         obj
       when PyObjectWrapper
         obj.__pyref__
       when FFI::Pointer
-        PyObjectRef.new(obj)
+        PyObjectStruct.new(obj)
       else
         raise TypeError, "#{obj.inspect} is not a Python reference"
       end
@@ -41,10 +41,10 @@ module PyBind
       case obj
       when PyObjectWrapper
         obj
-      when PyObjectRef
+      when PyObjectStruct
         PyObject.new(obj)
       when FFI::Pointer
-        PyObject.new(PyObjectRef.new(obj))
+        PyObject.new(PyObjectStruct.new(obj))
       else
         raise TypeError, "#{obj.inspect} is not a Python object"
       end
@@ -60,7 +60,7 @@ module PyBind
     end
   end
 
-  class PyObjectRef
+  class PyObjectStruct
     def to_ruby
       TypeCast.to_ruby(self)
     end

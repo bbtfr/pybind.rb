@@ -1,4 +1,5 @@
 require 'pybind/version'
+require 'pybind/struct'
 require 'pybind/libpython'
 require 'pybind/import'
 require 'pybind/error'

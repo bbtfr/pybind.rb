@@ -10,7 +10,7 @@ module PyBind
 
     def self.new(init = nil)
       case init
-      when PyObjectRef
+      when PyObjectStruct
         super
       when nil
         new(LibPython.PyDict_New())
@@ -21,7 +21,7 @@ module PyBind
           end
         end
       else
-        raise TypeError, "the argument must be a PyObjectRef or a Hash"
+        raise TypeError, "the argument must be a PyObjectStruct or a Hash"
       end
     end
 

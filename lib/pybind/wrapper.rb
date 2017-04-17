@@ -11,7 +11,7 @@ module PyBind
     attr_reader :__pyref__
 
     def initialize(pyref)
-      raise TypeError, "the argument must be a PyObjectRef" unless pyref.kind_of? PyObjectRef
+      raise TypeError, "the argument must be a PyObjectStruct" unless pyref.kind_of? PyObjectStruct
       @__pyref__ = pyref
     end
 

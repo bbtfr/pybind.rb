@@ -1,30 +1,6 @@
 require 'ffi'
 
 module PyBind
-  class PyObjectRef < FFI::Struct
-    layout ob_refcnt: :ssize_t,
-           ob_type:   PyObjectRef.by_ref
-
-    def self.null
-      new(FFI::Pointer::NULL)
-    end
-
-    def none?
-      PyBind.None.to_ptr == to_ptr
-    end
-
-    def kind_of?(klass)
-      case klass
-      when PyBind::PyObjectRef
-        value = LibPython.PyObject_IsInstance(self, klass)
-        raise PyError.fetch if value == -1
-        value == 1
-      else
-        super
-      end
-    end
-  end
-
   module LibPython
     extend FFI::Library
 
@@ -136,44 +112,44 @@ module PyBind
 
     # --- global variables ---
 
-    attach_variable :_Py_NoneStruct, PyObjectRef
+    attach_variable :_Py_NoneStruct, PyObjectStruct
 
     def self.Py_None
       _Py_NoneStruct
     end
 
-    attach_variable :PyType_Type, PyObjectRef
+    attach_variable :PyType_Type, PyObjectStruct
 
     if libpython.find_variable('PyInt_Type')
       has_PyInt_Type = true
-      attach_variable :PyInt_Type, PyObjectRef
+      attach_variable :PyInt_Type, PyObjectStruct
     else
       has_PyInt_Type = false
-      attach_variable :PyInt_Type, :PyLong_Type, PyObjectRef
+      attach_variable :PyInt_Type, :PyLong_Type, PyObjectStruct
     end
 
-    attach_variable :PyLong_Type, PyObjectRef
-    attach_variable :PyBool_Type, PyObjectRef
-    attach_variable :PyFloat_Type, PyObjectRef
-    attach_variable :PyComplex_Type, PyObjectRef
-    attach_variable :PyUnicode_Type, PyObjectRef
+    attach_variable :PyLong_Type, PyObjectStruct
+    attach_variable :PyBool_Type, PyObjectStruct
+    attach_variable :PyFloat_Type, PyObjectStruct
+    attach_variable :PyComplex_Type, PyObjectStruct
+    attach_variable :PyUnicode_Type, PyObjectStruct
 
     if libpython.find_symbol('PyString_FromStringAndSize')
       string_as_bytes = false
-      attach_variable :PyString_Type, PyObjectRef
+      attach_variable :PyString_Type, PyObjectStruct
     else
       string_as_bytes = true
-      attach_variable :PyString_Type, :PyBytes_Type, PyObjectRef
+      attach_variable :PyString_Type, :PyBytes_Type, PyObjectStruct
     end
 
-    attach_variable :PyTuple_Type, PyObjectRef
-    attach_variable :PySlice_Type, PyObjectRef
-    attach_variable :PyList_Type, PyObjectRef
-    attach_variable :PyDict_Type, PyObjectRef
-    attach_variable :PySet_Type, PyObjectRef
+    attach_variable :PyTuple_Type, PyObjectStruct
+    attach_variable :PySlice_Type, PyObjectStruct
+    attach_variable :PyList_Type, PyObjectStruct
+    attach_variable :PyDict_Type, PyObjectStruct
+    attach_variable :PySet_Type, PyObjectStruct
 
-    attach_variable :PyFunction_Type, PyObjectRef
-    attach_variable :PyMethod_Type, PyObjectRef
+    attach_variable :PyFunction_Type, PyObjectStruct
+    attach_variable :PyMethod_Type, PyObjectStruct
 
     # --- functions ---
 
@@ -184,79 +160,79 @@ module PyBind
 
     # Reference count
 
-    attach_function :Py_IncRef, [PyObjectRef.by_ref], :void
-    attach_function :Py_DecRef, [PyObjectRef.by_ref], :void
+    attach_function :Py_IncRef, [PyObjectStruct.by_ref], :void
+    attach_function :Py_DecRef, [PyObjectStruct.by_ref], :void
 
     # Object
 
-    attach_function :PyObject_RichCompare, [PyObjectRef.by_ref, PyObjectRef.by_ref, :int], PyObjectRef.by_ref
-    attach_function :PyObject_RichCompareBool, [PyObjectRef.by_ref, PyObjectRef.by_ref, :int], :int
-    attach_function :PyObject_GetAttrString, [PyObjectRef.by_ref, :string], PyObjectRef.by_ref
-    attach_function :PyObject_SetAttrString, [PyObjectRef.by_ref, :string, PyObjectRef.by_ref], :int
-    attach_function :PyObject_HasAttrString, [PyObjectRef.by_ref, :string], :int
-    attach_function :PyObject_GetItem, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyObject_SetItem, [PyObjectRef.by_ref, PyObjectRef.by_ref, PyObjectRef.by_ref], :int
-    attach_function :PyObject_DelItem, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
-    attach_function :PyObject_Call, [PyObjectRef.by_ref, PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyObject_IsInstance, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
-    attach_function :PyObject_IsSubclass, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
-    attach_function :PyObject_Dir, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyObject_Repr, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyObject_Str, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyObject_Type, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyCallable_Check, [PyObjectRef.by_ref], :int
+    attach_function :PyObject_RichCompare, [PyObjectStruct.by_ref, PyObjectStruct.by_ref, :int], PyObjectStruct.by_ref
+    attach_function :PyObject_RichCompareBool, [PyObjectStruct.by_ref, PyObjectStruct.by_ref, :int], :int
+    attach_function :PyObject_GetAttrString, [PyObjectStruct.by_ref, :string], PyObjectStruct.by_ref
+    attach_function :PyObject_SetAttrString, [PyObjectStruct.by_ref, :string, PyObjectStruct.by_ref], :int
+    attach_function :PyObject_HasAttrString, [PyObjectStruct.by_ref, :string], :int
+    attach_function :PyObject_GetItem, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyObject_SetItem, [PyObjectStruct.by_ref, PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
+    attach_function :PyObject_DelItem, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
+    attach_function :PyObject_Call, [PyObjectStruct.by_ref, PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyObject_IsInstance, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
+    attach_function :PyObject_IsSubclass, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
+    attach_function :PyObject_Dir, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyObject_Repr, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyObject_Str, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyObject_Type, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyCallable_Check, [PyObjectStruct.by_ref], :int
 
     # PyObject_Compare only avaliable in Python 3.x
     if libpython.find_symbol('PyObject_DelAttrString')
-      attach_function :PyObject_DelAttrString, [PyObjectRef.by_ref, :string], :int
+      attach_function :PyObject_DelAttrString, [PyObjectStruct.by_ref, :string], :int
     end
 
     # PyObject_Compare only avaliable in Python 2.x
     if libpython.find_symbol('PyObject_Compare')
-      attach_function :PyObject_Compare, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
+      attach_function :PyObject_Compare, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
     end
 
     # Bool
 
-    attach_function :PyBool_FromLong, [:long], PyObjectRef.by_ref
+    attach_function :PyBool_FromLong, [:long], PyObjectStruct.by_ref
 
     # Integer
 
     if has_PyInt_Type
-      attach_function :PyInt_AsSsize_t, [PyObjectRef.by_ref], :ssize_t
+      attach_function :PyInt_AsSsize_t, [PyObjectStruct.by_ref], :ssize_t
     else
-      attach_function :PyInt_AsSsize_t, :PyLong_AsSsize_t, [PyObjectRef.by_ref], :ssize_t
+      attach_function :PyInt_AsSsize_t, :PyLong_AsSsize_t, [PyObjectStruct.by_ref], :ssize_t
     end
 
     if has_PyInt_Type
-      attach_function :PyInt_FromSsize_t, [:ssize_t], PyObjectRef.by_ref
+      attach_function :PyInt_FromSsize_t, [:ssize_t], PyObjectStruct.by_ref
     else
-      attach_function :PyInt_FromSsize_t, :PyLong_FromSsize_t, [:ssize_t], PyObjectRef.by_ref
+      attach_function :PyInt_FromSsize_t, :PyLong_FromSsize_t, [:ssize_t], PyObjectStruct.by_ref
     end
 
     # Float
 
-    attach_function :PyFloat_FromDouble, [:double], PyObjectRef.by_ref
-    attach_function :PyFloat_AsDouble, [PyObjectRef.by_ref], :double
+    attach_function :PyFloat_FromDouble, [:double], PyObjectStruct.by_ref
+    attach_function :PyFloat_AsDouble, [PyObjectStruct.by_ref], :double
 
     # Complex
 
-    attach_function :PyComplex_RealAsDouble, [PyObjectRef.by_ref], :double
-    attach_function :PyComplex_ImagAsDouble, [PyObjectRef.by_ref], :double
+    attach_function :PyComplex_RealAsDouble, [PyObjectStruct.by_ref], :double
+    attach_function :PyComplex_ImagAsDouble, [PyObjectStruct.by_ref], :double
 
     # String
 
     if string_as_bytes
-      attach_function :PyString_FromStringAndSize, :PyBytes_FromStringAndSize, [:string, :ssize_t], PyObjectRef.by_ref
+      attach_function :PyString_FromStringAndSize, :PyBytes_FromStringAndSize, [:string, :ssize_t], PyObjectStruct.by_ref
     else
-      attach_function :PyString_FromStringAndSize, [:string, :ssize_t], PyObjectRef.by_ref
+      attach_function :PyString_FromStringAndSize, [:string, :ssize_t], PyObjectStruct.by_ref
     end
 
     # PyString_AsStringAndSize :: (PyPtr, char**, int*) -> int
     if string_as_bytes
-      attach_function :PyString_AsStringAndSize, :PyBytes_AsStringAndSize, [PyObjectRef.by_ref, :pointer, :pointer], :int
+      attach_function :PyString_AsStringAndSize, :PyBytes_AsStringAndSize, [PyObjectStruct.by_ref, :pointer, :pointer], :int
     else
-      attach_function :PyString_AsStringAndSize, [PyObjectRef.by_ref, :pointer, :pointer], :int
+      attach_function :PyString_AsStringAndSize, [PyObjectStruct.by_ref, :pointer, :pointer], :int
     end
 
     # Unicode
@@ -264,106 +240,106 @@ module PyBind
     # PyUnicode_DecodeUTF8
     case
     when libpython.find_symbol('PyUnicode_DecodeUTF8')
-      attach_function :PyUnicode_DecodeUTF8, [:string, :ssize_t, :string], PyObjectRef.by_ref
+      attach_function :PyUnicode_DecodeUTF8, [:string, :ssize_t, :string], PyObjectStruct.by_ref
     when libpython.find_symbol('PyUnicodeUCS4_DecodeUTF8')
-      attach_function :PyUnicode_DecodeUTF8, :PyUnicodeUCS4_DecodeUTF8, [:string, :ssize_t, :string], PyObjectRef.by_ref
+      attach_function :PyUnicode_DecodeUTF8, :PyUnicodeUCS4_DecodeUTF8, [:string, :ssize_t, :string], PyObjectStruct.by_ref
     when libpython.find_symbol('PyUnicodeUCS2_DecodeUTF8')
-      attach_function :PyUnicode_DecodeUTF8, :PyUnicodeUCS2_DecodeUTF8, [:string, :ssize_t, :string], PyObjectRef.by_ref
+      attach_function :PyUnicode_DecodeUTF8, :PyUnicodeUCS2_DecodeUTF8, [:string, :ssize_t, :string], PyObjectStruct.by_ref
     end
 
     # PyUnicode_AsUTF8String
     case
     when libpython.find_symbol('PyUnicode_AsUTF8String')
-      attach_function :PyUnicode_AsUTF8String, [PyObjectRef.by_ref], PyObjectRef.by_ref
+      attach_function :PyUnicode_AsUTF8String, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
     when libpython.find_symbol('PyUnicodeUCS4_AsUTF8String')
-      attach_function :PyUnicode_AsUTF8String, :PyUnicodeUCS4_AsUTF8String, [PyObjectRef.by_ref], PyObjectRef.by_ref
+      attach_function :PyUnicode_AsUTF8String, :PyUnicodeUCS4_AsUTF8String, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
     when libpython.find_symbol('PyUnicodeUCS2_AsUTF8String')
-      attach_function :PyUnicode_AsUTF8String, :PyUnicodeUCS2_AsUTF8String, [PyObjectRef.by_ref], PyObjectRef.by_ref
+      attach_function :PyUnicode_AsUTF8String, :PyUnicodeUCS2_AsUTF8String, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
     end
 
     # Tuple
 
-    attach_function :PyTuple_New, [:ssize_t], PyObjectRef.by_ref
-    attach_function :PyTuple_GetItem, [PyObjectRef.by_ref, :ssize_t], PyObjectRef.by_ref
-    attach_function :PyTuple_SetItem, [PyObjectRef.by_ref, :ssize_t, PyObjectRef.by_ref], :int
-    attach_function :PyTuple_Size, [PyObjectRef.by_ref], :ssize_t
+    attach_function :PyTuple_New, [:ssize_t], PyObjectStruct.by_ref
+    attach_function :PyTuple_GetItem, [PyObjectStruct.by_ref, :ssize_t], PyObjectStruct.by_ref
+    attach_function :PyTuple_SetItem, [PyObjectStruct.by_ref, :ssize_t, PyObjectStruct.by_ref], :int
+    attach_function :PyTuple_Size, [PyObjectStruct.by_ref], :ssize_t
 
     # Slice
 
-    attach_function :PySlice_New, [PyObjectRef.by_ref, PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PySlice_New, [PyObjectStruct.by_ref, PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
 
     # List
 
-    attach_function :PyList_New, [:ssize_t], PyObjectRef.by_ref
-    attach_function :PyList_Size, [PyObjectRef.by_ref], :ssize_t
-    attach_function :PyList_GetItem, [PyObjectRef.by_ref, :ssize_t], PyObjectRef.by_ref
-    attach_function :PyList_SetItem, [PyObjectRef.by_ref, :ssize_t, PyObjectRef.by_ref], :int
-    attach_function :PyList_Append, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
+    attach_function :PyList_New, [:ssize_t], PyObjectStruct.by_ref
+    attach_function :PyList_Size, [PyObjectStruct.by_ref], :ssize_t
+    attach_function :PyList_GetItem, [PyObjectStruct.by_ref, :ssize_t], PyObjectStruct.by_ref
+    attach_function :PyList_SetItem, [PyObjectStruct.by_ref, :ssize_t, PyObjectStruct.by_ref], :int
+    attach_function :PyList_Append, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
 
     # Sequence
 
-    attach_function :PySequence_Size, [PyObjectRef.by_ref], :ssize_t
-    attach_function :PySequence_GetItem, [PyObjectRef.by_ref, :ssize_t], PyObjectRef.by_ref
-    attach_function :PySequence_Contains, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
+    attach_function :PySequence_Size, [PyObjectStruct.by_ref], :ssize_t
+    attach_function :PySequence_GetItem, [PyObjectStruct.by_ref, :ssize_t], PyObjectStruct.by_ref
+    attach_function :PySequence_Contains, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
 
     # Dict
 
-    attach_function :PyDict_New, [], PyObjectRef.by_ref
-    attach_function :PyDict_GetItem, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyDict_GetItemString, [PyObjectRef.by_ref, :string], PyObjectRef.by_ref
-    attach_function :PyDict_SetItem, [PyObjectRef.by_ref, PyObjectRef.by_ref, PyObjectRef.by_ref], :int
-    attach_function :PyDict_SetItemString, [PyObjectRef.by_ref, :string, PyObjectRef.by_ref], :int
-    attach_function :PyDict_DelItem, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
-    attach_function :PyDict_DelItem, [PyObjectRef.by_ref, :string], :int
-    attach_function :PyDict_Size, [PyObjectRef.by_ref], :ssize_t
-    attach_function :PyDict_Keys, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyDict_Values, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyDict_Items, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyDict_Contains, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
+    attach_function :PyDict_New, [], PyObjectStruct.by_ref
+    attach_function :PyDict_GetItem, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyDict_GetItemString, [PyObjectStruct.by_ref, :string], PyObjectStruct.by_ref
+    attach_function :PyDict_SetItem, [PyObjectStruct.by_ref, PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
+    attach_function :PyDict_SetItemString, [PyObjectStruct.by_ref, :string, PyObjectStruct.by_ref], :int
+    attach_function :PyDict_DelItem, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
+    attach_function :PyDict_DelItem, [PyObjectStruct.by_ref, :string], :int
+    attach_function :PyDict_Size, [PyObjectStruct.by_ref], :ssize_t
+    attach_function :PyDict_Keys, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyDict_Values, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyDict_Items, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyDict_Contains, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
 
     # Set
 
-    attach_function :PySet_Size, [PyObjectRef.by_ref], :ssize_t
-    attach_function :PySet_Contains, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
-    attach_function :PySet_Add, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
-    attach_function :PySet_Discard, [PyObjectRef.by_ref, PyObjectRef.by_ref], :int
+    attach_function :PySet_Size, [PyObjectStruct.by_ref], :ssize_t
+    attach_function :PySet_Contains, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
+    attach_function :PySet_Add, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
+    attach_function :PySet_Discard, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], :int
 
     # Module
 
-    attach_function :PyModule_GetDict, [PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :PyModule_GetDict, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
 
     # Import
 
-    attach_function :PyImport_ImportModule, [:string], PyObjectRef.by_ref
+    attach_function :PyImport_ImportModule, [:string], PyObjectStruct.by_ref
 
     # Operators
 
-    attach_function :PyNumber_Add, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Subtract, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Multiply, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_TrueDivide, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Remainder, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Power, [PyObjectRef.by_ref, PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Lshift, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Rshift, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_And, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Xor, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Or, [PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Positive, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Negative, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyNumber_Invert, [PyObjectRef.by_ref], PyObjectRef.by_ref
-    attach_function :PyObject_Not, [PyObjectRef.by_ref], :int
+    attach_function :PyNumber_Add, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Subtract, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Multiply, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_TrueDivide, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Remainder, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Power, [PyObjectStruct.by_ref, PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Lshift, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Rshift, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_And, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Xor, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Or, [PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Positive, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Negative, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyNumber_Invert, [PyObjectStruct.by_ref], PyObjectStruct.by_ref
+    attach_function :PyObject_Not, [PyObjectStruct.by_ref], :int
 
     # Compiler
 
-    attach_function :Py_CompileString, [:string, :string, :int], PyObjectRef.by_ref
-    attach_function :PyEval_EvalCode, [PyObjectRef.by_ref, PyObjectRef.by_ref, PyObjectRef.by_ref], PyObjectRef.by_ref
+    attach_function :Py_CompileString, [:string, :string, :int], PyObjectStruct.by_ref
+    attach_function :PyEval_EvalCode, [PyObjectStruct.by_ref, PyObjectStruct.by_ref, PyObjectStruct.by_ref], PyObjectStruct.by_ref
 
     # Error
 
     attach_function :PyErr_Clear, [], :void
     attach_function :PyErr_Print, [], :void
-    attach_function :PyErr_Occurred, [], PyObjectRef.by_ref
+    attach_function :PyErr_Occurred, [], PyObjectStruct.by_ref
     attach_function :PyErr_Fetch, [:pointer, :pointer, :pointer], :void
     attach_function :PyErr_NormalizeException, [:pointer, :pointer, :pointer], :void
 
