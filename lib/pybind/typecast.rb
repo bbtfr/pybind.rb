@@ -14,7 +14,7 @@ module PyBind
       if indices.length == 1
         indices = indices[0]
       else
-        indices = PyCall.tuple(*indices)
+        indices = PyTuple.new(indices)
       end
       indices.to_python
     end

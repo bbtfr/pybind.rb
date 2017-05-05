@@ -5,7 +5,7 @@ module PyBind
     attr_reader :builtin
   end
 
-  def self.__initialize_pycall__
+  def self.__initialize_pybind__
     initialized = (0 != LibPython.Py_IsInitialized())
     return if initialized
 
@@ -19,5 +19,5 @@ module PyBind
     @builtin = LibPython.PyImport_ImportModule(PYTHON_VERSION < '3.0.0' ? '__builtin__' : 'builtins').to_ruby
   end
 
-  __initialize_pycall__
+  __initialize_pybind__
 end
