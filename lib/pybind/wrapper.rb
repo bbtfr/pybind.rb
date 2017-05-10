@@ -4,7 +4,7 @@ require 'pybind/wrapper/operator'
 
 module PyBind
   module PyObjectClassMethods
-    def bind_pytype(pytype, &block)
+    def pybind_type(pytype, &block)
       raise ArgumentError, "#{self} is already bound with #{@pystruct}" if @pystruct
       define_singleton_method :from_python, &block if block
       @pystruct = pytype.to_python_struct
@@ -70,12 +70,12 @@ module PyBind
 
     def inspect
       str = LibPython.PyObject_Repr(@pystruct)
-      return "#<#{self.class}(#{str.to_ruby})>" unless str.null?
+      return "#<#{self.class.name || python_type}(#{str.to_ruby})>" unless str.null?
       super
     end
 
     def methods
-      LibPython.PyObject_Dir(@pystruct).to_ruby
+      LibPython.PyObject_Dir(@pystruct).to_ruby.map &:to_sym
     end
 
     extend Forwardable

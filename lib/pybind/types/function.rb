@@ -5,19 +5,19 @@ module PyBind
   class PyFunction
     include PyCallable
     include PyObjectWrapper
-    bind_pytype PyBind.types.FunctionType
+    pybind_type PyBind.types.FunctionType
   end
 
   class PyMethod
     include PyCallable
     include PyObjectWrapper
-    bind_pytype PyBind.types.MethodType
+    pybind_type PyBind.types.MethodType
   end
 
   class PyBuiltinFunction
     include PyCallable
     include PyObjectWrapper
-    bind_pytype PyBind.types.BuiltinFunctionType
+    pybind_type PyBind.types.BuiltinFunctionType
   end
 
   class PyType

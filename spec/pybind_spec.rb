@@ -31,7 +31,7 @@ RSpec.describe PyBind do
 
   describe '.dir' do
     it 'calls global dir function' do
-      expect(PyBind.eval('object()').methods).to include('__class__')
+      expect(PyBind.eval('object()').methods).to include(:__class__)
     end
   end
 

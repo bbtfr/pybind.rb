@@ -5,7 +5,7 @@ module PyBind
   end
 
   ::RSpec.describe PyObjectWrapper do
-    describe '.bind_pytype' do
+    describe '.pybind_type' do
       include_context 'Save and restore original python type map'
 
       context 'called with fractions.Fraction class' do
@@ -19,7 +19,7 @@ module PyBind
           expect(fraction_class.(1, 2)).to be_kind_of(PyObjectWrapper)
 
           expect {
-            klass.bind_pytype fraction_class
+            klass.pybind_type fraction_class
           }.not_to raise_error
 
           # after wrapping the class

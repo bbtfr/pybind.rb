@@ -47,7 +47,7 @@ module PyBind
 
           klass = Class.new
           klass.include PyObjectWrapper
-          klass.bind_pytype fraction_class do |pyref|
+          klass.pybind_type fraction_class do |pyref|
             pyobj = PyObject.new(pyref)
             Rational(pyobj.numerator, pyobj.denominator)
           end

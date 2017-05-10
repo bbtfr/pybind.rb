@@ -62,7 +62,7 @@ Fraction = PyBind.import_module('fractions').Fraction
 
 class PyFraction
   include PyBind::PyObjectWrapper
-  bind_pytype Fraction
+  pybind_type Fraction
 end
 
 f = Fraction.(1, 2)
@@ -81,7 +81,7 @@ class PyFraction
 
   Fraction = PyBind.import_module('fractions').Fraction
 
-  bind_pytype Fraction do |pyref|
+  pybind_type Fraction do |pyref|
     # pyref is a PyObjectRef, which is a FFI::Struct
     # This block defines how Python object converts to Ruby object
     # By default, it's `new(pyref)`

@@ -3,7 +3,7 @@ require 'pybind/types/sequence'
 module PyBind
   class PyTuple
     include PyObjectWrapper
-    bind_pytype LibPython.PyTuple_Type
+    pybind_type LibPython.PyTuple_Type
 
     include PySequence
 

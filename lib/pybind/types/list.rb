@@ -3,7 +3,7 @@ require 'pybind/types/sequence'
 module PyBind
   class PyList
     include PyObjectWrapper
-    bind_pytype LibPython.PyList_Type
+    pybind_type LibPython.PyList_Type
 
     include PySequence
 
