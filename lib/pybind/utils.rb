@@ -70,6 +70,22 @@ module PyBind
       pyobj
     end
 
+    def dict(args)
+      PyDict.new(args)
+    end
+
+    def set(args)
+      PySet.new(args)
+    end
+
+    def slice(*args)
+      PySlice.new(*args)
+    end
+
+    def tuple(*args)
+      PyTuple.new(args)
+    end
+
     private
 
     def main_dict
