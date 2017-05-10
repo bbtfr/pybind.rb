@@ -74,6 +74,10 @@ module PyBind
       super
     end
 
+    def methods
+      LibPython.PyObject_Dir(@pystruct).to_ruby
+    end
+
     extend Forwardable
     def_delegators :@pystruct, :null?, :none?
 

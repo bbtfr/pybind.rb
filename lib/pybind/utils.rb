@@ -3,7 +3,6 @@ module PyBind
     BUILTIN_FUNCS = %w[
       getattr hasattr setattr delattr
       id type dir len iter next
-      isinstance issubclass str repr int
     ]
 
     BUILTIN_FUNCS.each do |func|
@@ -13,7 +12,7 @@ module PyBind
     end
 
     MODULE_SHORTCUTS = %w[
-      sys os types traceback
+      types traceback
     ]
 
     MODULE_SHORTCUTS.each do |mod|

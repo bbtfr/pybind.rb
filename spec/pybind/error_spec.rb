@@ -4,7 +4,7 @@ module PyBind
   RSpec.describe PyError do
     subject { PyError.new(type, value, traceback) }
 
-    let(:pyerror) { begin PyBind.len(); rescue => error; error end }
+    let(:pyerror) { begin PyBind.builtin.len.(); rescue => error; error end }
     let(:type) { pyerror.type }
     let(:value) { pyerror.value }
     let(:traceback) { pyerror.traceback }

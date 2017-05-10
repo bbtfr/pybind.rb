@@ -31,12 +31,12 @@ RSpec.describe PyBind do
 
   describe '.dir' do
     it 'calls global dir function' do
-      expect(PyBind.dir(PyBind.eval('object()'))).to include('__class__')
+      expect(PyBind.eval('object()').methods).to include('__class__')
     end
   end
 
   describe 'sys.argv' do
-    subject { PyBind.sys.argv }
+    subject { PyBind.import('sys').argv }
     it { is_expected.to eq(['']) }
   end
 

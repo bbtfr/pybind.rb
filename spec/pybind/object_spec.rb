@@ -10,8 +10,8 @@ module PyBind
 
     describe '#call' do
       it 'calls a PyObject as a function' do
-        expect(PyBind.str(42)).to eq('42')
-        expect(PyBind.int(10 * Math::PI)).to eq(31)
+        expect(PyBind.builtin.str.(42)).to eq('42')
+        expect(PyBind.builtin.int.(10 * Math::PI)).to eq(31)
       end
     end
 

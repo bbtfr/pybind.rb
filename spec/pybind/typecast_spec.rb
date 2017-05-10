@@ -28,7 +28,7 @@ module PyBind
       end
 
       let(:fraction_class) do
-        PyBind.getattr(fractions_module, :Fraction)
+        fractions_module.get_attr(:Fraction)
       end
 
       let(:fraction_value) do
@@ -37,7 +37,7 @@ module PyBind
 
       context 'the given python type is not registered in type mapping' do
         it 'does not convert the given python object' do
-          expect(TypeCast.from_python(fraction_value)).to be_kind_of(PyObject)
+          expect(TypeCast.from_python(fraction_value)).to be_kind_of(PyObjectWrapper)
         end
       end
 
