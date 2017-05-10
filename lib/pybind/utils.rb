@@ -18,16 +18,12 @@ module PyBind
 
     MODULE_SHORTCUTS.each do |mod|
       define_method(mod) do |*args|
-        PyBind.import_module(mod)
+        PyBind.import(mod)
       end
     end
 
     def None
       LibPython.Py_None
-    end
-
-    def main_dict
-      LibPython.PyModule_GetDict(PyBind.import_module("__main__").to_python_struct).to_ruby
     end
 
     def eval(str)
@@ -70,6 +66,12 @@ module PyBind
     def parse_traceback(traceback)
       format_tb_func = PyBind.traceback.get_attr('format_tb')
       format_tb_func.call(traceback).to_a
+    end
+
+    private
+
+    def main_dict
+      LibPython.PyModule_GetDict(PyBind.import("__main__").to_python_struct).to_ruby
     end
   end
 

@@ -13,18 +13,18 @@ RSpec.describe PyBind do
   end
 
   describe 'PyBind.main_dict' do
-    subject(:main_dict) { PyBind.main_dict }
+    subject(:main_dict) { PyBind.send :main_dict }
 
     specify 'ob_refcnt >= 1' do
       expect(main_dict.to_python_struct[:ob_refcnt]).to be >= 1
     end
   end
 
-  describe '.import_module' do
+  describe '.import' do
     context 'without block' do
       it 'returns an imported module' do
         begin
-          mod = PyBind.import_module('__main__')
+          mod = PyBind.import('__main__')
           expect(mod.python_type.to_s).to match(/module/)
         ensure
           PyBind.decref(mod.to_python_struct)
@@ -35,9 +35,9 @@ RSpec.describe PyBind do
     context 'with block' do
       it 'ensures to release python module object' do
         cnt = {}
-        PyBind.import_module('__main__') { |outer_m|
+        PyBind.import('__main__') { |outer_m|
           cnt[:before] = outer_m.to_python_struct[:ob_refcnt]
-          PyBind.import_module('__main__') { |inner_m|
+          PyBind.import('__main__') { |inner_m|
             cnt[:inner] = inner_m.to_python_struct[:ob_refcnt]
           }
           cnt[:after] = outer_m.to_python_struct[:ob_refcnt]

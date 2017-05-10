@@ -19,7 +19,7 @@ module PyBind
       subject { PyObject.new(1.to_python) }
 
       it 'returns python type' do
-        expect(subject.python_type.to_s).to eq "PyType(int)"
+        expect(subject.python_type.to_s).to eq "int"
       end
     end
   end

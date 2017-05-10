@@ -5,7 +5,7 @@ module PyBind
         raise ArgumentError, "#{as.inspect} is not a valid module variable name, use pyimport #{mod_name.inspect}, as: <name>"
       end
 
-      mod = PyBind.import_module(mod_name)
+      mod = PyBind.import(mod_name)
       raise PyError.fetch unless mod
 
       define_singleton_method(as) { mod }
@@ -14,7 +14,7 @@ module PyBind
     def pyfrom(mod_name, import: nil)
       raise ArgumentError, "missing identifiers to be imported" unless import
 
-      mod = PyBind.import_module(mod_name)
+      mod = PyBind.import(mod_name)
       raise PyError.fetch unless mod
 
       case import
@@ -35,7 +35,7 @@ module PyBind
     end
   end
 
-  def self.import_module(name)
+  def self.import(name)
     name = name.to_s if name.is_a? Symbol
     raise TypeError, 'name must be a String' unless name.is_a? String
     value = LibPython.PyImport_ImportModule(name)

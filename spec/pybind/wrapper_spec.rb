@@ -10,7 +10,7 @@ module PyBind
 
       context 'called with fractions.Fraction class' do
         it 'makes the class as a Fraction object wrapper' do
-          fraction_class = PyBind.import_module('fractions').Fraction
+          fraction_class = PyBind.import('fractions').Fraction
 
           klass = Class.new
           klass.include PyObjectWrapper
@@ -29,7 +29,7 @@ module PyBind
     end
 
     describe '#rich_compare' do
-      let(:fraction_class) { PyBind.import_module('fractions').Fraction }
+      let(:fraction_class) { PyBind.import('fractions').Fraction }
       subject { fraction_class.(1, 2) }
 
       context 'when comparing with an Integer' do

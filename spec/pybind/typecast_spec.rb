@@ -24,7 +24,7 @@ module PyBind
       include_context 'Save and restore original python type map'
 
       let(:fractions_module) do
-        PyBind.import_module('fractions')
+        PyBind.import('fractions')
       end
 
       let(:fraction_class) do
