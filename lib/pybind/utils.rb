@@ -26,6 +26,14 @@ module PyBind
       LibPython.Py_None
     end
 
+    def True
+      LibPython.Py_True
+    end
+
+    def False
+      LibPython.Py_False
+    end
+
     def eval(str)
       dict = main_dict
       eval_func = PyBind.builtin.get_attr('eval')
