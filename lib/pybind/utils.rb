@@ -7,7 +7,7 @@ module PyBind
 
     BUILTIN_FUNCS.each do |func|
       define_method(func) do |*args|
-        PyBind.builtin.get_attr(func).call(*args)
+        PyBind.builtin.get_attribute(func).call(*args)
       end
     end
 
@@ -35,19 +35,19 @@ module PyBind
 
     def eval(str)
       dict = main_dict
-      eval_func = PyBind.builtin.get_attr('eval')
+      eval_func = PyBind.builtin.get_attribute('eval')
       eval_func.call(str, dict, dict)
     end
 
     def execfile(filename)
       dict = main_dict
-      if PyBind.builtin.has_attr?('execfile')
-        execfile_func = PyBind.builtin.get_attr('execfile')
+      if PyBind.builtin.has_attribute?('execfile')
+        execfile_func = PyBind.builtin.get_attribute('execfile')
         execfile_func.call(filename, dict, dict)
       else
-        open_func = PyBind.builtin.get_attr('open')
-        exec_func = PyBind.builtin.get_attr('exec')
-        content = open_func.call(filename).get_attr('read').call()
+        open_func = PyBind.builtin.get_attribute('open')
+        exec_func = PyBind.builtin.get_attribute('exec')
+        content = open_func.call(filename).get_attribute('read').call()
         exec_func.(content, dict, dict)
       end
     end

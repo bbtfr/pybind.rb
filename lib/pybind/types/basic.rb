@@ -4,13 +4,13 @@ module PyBind
     pybind_type LibPython.PyType_Type
 
     def to_s
-      return super unless has_attr?('__name__')
-      get_attr('__name__')
+      return super unless has_attribute?('__name__')
+      get_attribute('__name__')
     end
 
     def inspect
-      return super unless has_attr?('__name__')
-      "#<PyType(#{get_attr('__name__')})>"
+      return super unless has_attribute?('__name__')
+      "#<PyType(#{get_attribute('__name__')})>"
     end
   end
 

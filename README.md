@@ -106,7 +106,7 @@ require 'pybind'
 require 'pybind/autocall'
 
 # No dot anymore, if you need the function object, you need to call
-# `PyBind.builtin.get_attr('print')`
+# `PyBind.builtin.get_attribute('print')`
 PyBind.builtin.print('Hello, world!')
 ```
 

@@ -20,16 +20,16 @@ module PyBind
       case import
       when Hash
         import.each do |attr, as|
-          val = mod.get_attr(attr)
+          val = mod.get_attribute(attr)
           define_singleton_method(as) { val }
         end
       when Array
         import.each do |attr|
-          val = mod.get_attr(attr)
+          val = mod.get_attribute(attr)
           define_singleton_method(attr) { val }
         end
       when Symbol, String
-        val = mod.get_attr(import)
+        val = mod.get_attribute(import)
         define_singleton_method(import) { val }
       end
     end

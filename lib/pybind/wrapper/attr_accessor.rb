@@ -1,6 +1,6 @@
 module PyBind
   module AttrAccessor
-    def get_attr(name, default = nil)
+    def get_attribute(name, default = nil)
       value = LibPython.PyObject_GetAttrString(@pystruct, name.to_s)
       if value.null?
         raise PyError.fetch unless default
@@ -9,14 +9,14 @@ module PyBind
       value.to_ruby
     end
 
-    def set_attr(name, value)
+    def set_attribute(name, value)
       value = value.to_python
       ret = LibPython.PyObject_SetAttrString(@pystruct, name.to_s, value)
       raise PyError.fetch if ret == -1
       self
     end
 
-    def del_attr(name)
+    def remove_attribute(name)
       value = LibPython.PyObject_GetAttrString(@pystruct, name.to_s)
       raise PyError.fetch if value.null?
       ret = if LibPython.respond_to? :PyObject_DelAttrString
@@ -28,7 +28,7 @@ module PyBind
       value.to_ruby
     end
 
-    def has_attr?(name)
+    def has_attribute?(name)
       LibPython.PyObject_HasAttrString(@pystruct, name.to_s) == 1
     end
 

@@ -102,11 +102,11 @@ module PyBind
       is_setter = attr_name.end_with?("=")
       attr_name = attr_name.chomp('=') if is_setter
 
-      if has_attr?(attr_name)
+      if has_attribute?(attr_name)
         if is_setter
-          set_attr(attr_name, *args)
+          set_attribute(attr_name, *args)
         else
-          autocall_method_missing(get_attr(attr_name), *args, **kwargs)
+          autocall_method_missing(get_attribute(attr_name), *args, **kwargs)
         end
       else
         super

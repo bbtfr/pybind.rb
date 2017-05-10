@@ -28,7 +28,7 @@ module PyBind
       end
 
       let(:fraction_class) do
-        fractions_module.get_attr(:Fraction)
+        fractions_module.get_attribute(:Fraction)
       end
 
       let(:fraction_value) do

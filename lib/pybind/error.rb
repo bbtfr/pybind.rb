@@ -32,7 +32,7 @@ module PyBind
   end
 
   def self.parse_traceback(traceback)
-    format_tb_func = PyBind.traceback.get_attr('format_tb')
+    format_tb_func = PyBind.traceback.get_attribute('format_tb')
     format_tb_func.call(traceback).to_a
   end
 end
