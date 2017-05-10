@@ -47,6 +47,14 @@ Import Python modules
 
 ```ruby
 require 'pybind'
+
+os = PyBind.import('os')
+puts os.name
+```
+
+```ruby
+# or more python-like
+require 'pybind'
 include PyBind::Import
 
 pyimport 'os'
@@ -58,7 +66,7 @@ Customize convertor between Ruby & Python object
 ```ruby
 require 'pybind'
 
-Fraction = PyBind.import_module('fractions').Fraction
+Fraction = PyBind.import('fractions').Fraction
 
 class PyFraction
   include PyBind::PyObjectWrapper
@@ -76,24 +84,24 @@ Or you can map Python object to exsisting Ruby class
 ```ruby
 require 'pybind'
 
-class PyFraction
+class Rational
   include PyBind::PyObjectWrapper
 
-  Fraction = PyBind.import_module('fractions').Fraction
+  Fraction = PyBind.import('fractions').Fraction
 
-  pybind_type Fraction do |pyref|
-    # pyref is a PyObjectRef, which is a FFI::Struct
+  pybind_type Fraction do |pystruct|
+    # pystruct is a PyObjectStruct, which is a FFI::Struct
     # This block defines how Python object converts to Ruby object
-    # By default, it's `new(pyref)`
+    # By default, it's `new(pystruct)`
 
     # For easily access the attributes, let's convert it to PyObject
-    pyobj = PyBind::PyObject.new(pyref)
-    Rational(pyobj.numerator, pyobj.denominator)
+    pyobj = pystruct.to_ruby_object
+    new(pyobj.numerator, pyobj.denominator)
   end
 
-  bind_rbtype Rational do |rbobj|
+  def to_python
     # This block defines how Ruby object converts back to Python object
-    Fraction.(rbobj.numerator, rbobj.denominator)
+    Fraction.(self.numerator, self.denominator)
   end
 end
 ```
@@ -106,7 +114,7 @@ require 'pybind'
 require 'pybind/autocall'
 
 # No dot anymore, if you need the function object, you need to call
-# `PyBind.builtin.get_attribute('print')`
+# `PyBind.builtin.get_attribute(:print)`
 PyBind.builtin.print('Hello, world!')
 ```
 
