@@ -24,9 +24,9 @@ module PyBind
       return other.null? if @pystruct.null?
       return false if other.null?
 
-      value = LibPython.PyObject_RichCompareBool(@pystruct, other, opcode)
-      raise PyError.fetch if value == -1
-      value == 1
+      value = LibPython.PyObject_RichCompare(@pystruct, other, opcode)
+      raise PyError.fetch if value.null?
+      value.to_ruby
     end
 
     RICH_COMPARISON_OPCODES.keys.each do |op|

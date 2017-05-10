@@ -7,11 +7,6 @@ module PyBind
       return super unless has_attribute?('__name__')
       get_attribute('__name__')
     end
-
-    def inspect
-      return super unless has_attribute?('__name__')
-      "#<PyType(#{get_attribute('__name__')})>"
-    end
   end
 
   class PyString

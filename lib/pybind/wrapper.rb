@@ -70,7 +70,7 @@ module PyBind
 
     def inspect
       str = LibPython.PyObject_Repr(@pystruct)
-      return "#<#{self.class.name || python_type}(#{str.to_ruby})>" unless str.null?
+      return "#<#{self.class.name || python_type} #{str.to_ruby}>" unless str.null?
       super
     end
 
