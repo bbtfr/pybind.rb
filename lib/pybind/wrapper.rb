@@ -65,8 +65,12 @@ module PyBind
     def to_s
       str = LibPython.PyObject_Str(@pystruct)
       return str.to_ruby unless str.null?
+      super
+    end
+
+    def inspect
       str = LibPython.PyObject_Repr(@pystruct)
-      return str.to_ruby unless str.null?
+      return "#<#{self.class}(#{str.to_ruby})>" unless str.null?
       super
     end
 

@@ -5,7 +5,12 @@ module PyBind
 
     def to_s
       return super unless has_attr?('__name__')
-      "PyType(#{get_attr('__name__')})"
+      get_attr('__name__')
+    end
+
+    def inspect
+      return super unless has_attr?('__name__')
+      "#<PyType(#{get_attr('__name__')})>"
     end
   end
 
