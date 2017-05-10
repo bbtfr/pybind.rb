@@ -2,7 +2,7 @@ module PyBind
   module Utils
     BUILTIN_FUNCS = %w[
       getattr hasattr setattr delattr
-      id type dir len iter next
+      id hash type dir len iter next help
     ]
 
     BUILTIN_FUNCS.each do |func|
