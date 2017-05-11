@@ -52,6 +52,11 @@ module PyBind
     def initialize(pystruct)
       raise TypeError, "the argument must be a PyObjectStruct" unless pystruct.kind_of? PyObjectStruct
       @pystruct = pystruct
+      ObjectSpace.define_finalizer(self, proc { PyObjectWrapper.finalize(@pystruct) })
+    end
+
+    def self.finalize(pystruct)
+      pystruct.decref
     end
 
     def call(*args, **kwargs)
