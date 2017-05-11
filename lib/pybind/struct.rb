@@ -24,6 +24,15 @@ module PyBind
       end
     end
 
+    def incref
+      LibPython.Py_IncRef(self)
+    end
+
+    def decref
+      LibPython.Py_DecRef(self)
+      self.pointer = FFI::Pointer::NULL
+    end
+
     def to_ruby_object
       PyObject.new(self)
     end

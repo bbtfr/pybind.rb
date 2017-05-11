@@ -1,7 +1,7 @@
 module PyBind
   module PyObjectWrapper
     def autocall_method_missing(value, *args, **kwargs)
-      if PyBind.callable? value
+      if value.callable?
         value.call(*args, **kwargs)
       else
         value

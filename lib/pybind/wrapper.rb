@@ -62,6 +62,10 @@ module PyBind
       res.to_ruby
     end
 
+    def callable?
+      LibPython.PyCallable_Check(@pystruct) == 1
+    end
+
     def to_s
       str = LibPython.PyObject_Str(@pystruct)
       return str.to_ruby unless str.null?
@@ -106,7 +110,8 @@ module PyBind
         if is_setter
           set_attribute(attr_name, *args)
         else
-          autocall_method_missing(get_attribute(attr_name), *args, **kwargs)
+          value = get_attribute(attr_name)
+          autocall_method_missing(value, *args, **kwargs)
         end
       else
         super

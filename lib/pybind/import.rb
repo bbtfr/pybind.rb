@@ -45,7 +45,7 @@ module PyBind
     begin
       yield value
     ensure
-      PyBind.decref(value)
+      value.to_python_struct.decref
     end
   end
 end

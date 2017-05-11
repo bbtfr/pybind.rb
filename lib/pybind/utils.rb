@@ -57,24 +57,15 @@ module PyBind
       LibPython.PyCallable_Check(pystruct) == 1
     end
 
-    def incref(pyobj)
-      pystruct = pyobj.to_python_struct
-      LibPython.Py_IncRef(pystruct)
-      pyobj
-    end
-
-    def decref(pyobj)
-      pystruct = pyobj.to_python_struct
-      LibPython.Py_DecRef(pystruct)
-      pystruct.send :pointer=, FFI::Pointer::NULL
-      pyobj
-    end
-
     def dict(args)
       PyDict.new(args)
     end
 
-    def set(args)
+    def list(*args)
+      PyList.new(args)
+    end
+
+    def set(*args)
       PySet.new(args)
     end
 

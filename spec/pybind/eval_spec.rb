@@ -27,7 +27,7 @@ RSpec.describe PyBind do
           mod = PyBind.import('__main__')
           expect(mod.python_type.to_s).to match(/module/)
         ensure
-          PyBind.decref(mod.to_python_struct)
+          mod.to_python_struct.decref
         end
       end
     end
